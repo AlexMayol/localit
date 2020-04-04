@@ -1,9 +1,15 @@
 {
   "name": "localit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simple wrapper class for localStorage and sessionStorage",
   "main": "index.js",
-  "keywords": ["HTML5", "localStorage", "sessionStorage", "store", "ES6 class"],
+  "keywords": [
+    "HTML5",
+    "localStorage",
+    "sessionStorage",
+    "store",
+    "ES6 class"
+  ],
   "author": "Alejandro Mayol",
   "scripts": {
     "clean": "rm dist/bundle.js",
