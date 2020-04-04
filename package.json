@@ -1,0 +1,18 @@
+{
+  "name": "localit",
+  "version": "1.0.0",
+  "description": "Simple wrapper class for localStorage and sessionStorage",
+  "main": "index.js",
+  "keywords": ["HTML5", "localStorage", "sessionStorage", "store", "ES6 class"],
+  "author": "Alejandro Mayol",
+  "scripts": {
+    "clean": "rm dist/bundle.js",
+    "start": "parcel src/index.html",
+    "build-prod": "parcel build src/index.html"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0"
+  }
+}
