@@ -1,4 +1,4 @@
-const localit = class Localit {
+export const Localit = class Localit {
     constructor(type = 'localStorage') {
         this.store = (type == 'localStorage') ? localStorage : sessionStorage;
     }
@@ -11,7 +11,11 @@ const localit = class Localit {
     }
 
     get(key) {
-        return JSON.parse(this.store.getItem(key));
+        try {
+            return JSON.parse(this.store.getItem(key))
+        } catch (e) {
+            return this.store.getItem(key)
+        }
     }
 
     remove(key) {
@@ -22,5 +26,3 @@ const localit = class Localit {
         this.store.clear();
     }
 }
-
-export { localit };
