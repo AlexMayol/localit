@@ -4,6 +4,7 @@
   "description": "Simple wrapper class for localStorage and sessionStorage",
   "repository": "alexmayol/localit",
   "main": "index.js",
+  "author": "Alejandro Mayol",
   "keywords": [
     "HTML5",
     "localStorage",
@@ -11,5 +12,11 @@
     "store",
     "ES6 class"
   ],
-  "author": "Alejandro Mayol"
+  "scripts": {
+    "test":"parcel tests/index.html",
+    "build": "parcel build src/localit.js --out-dir ./ --out-file index.js --no-source-maps --experimental-scope-hoisting"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
 }
