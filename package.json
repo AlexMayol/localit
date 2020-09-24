@@ -1,6 +1,6 @@
 {
   "name": "localit",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Simple wrapper class for localStorage and sessionStorage",
   "repository": "alexmayol/localit",
   "main": "index.js",
