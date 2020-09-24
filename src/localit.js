@@ -7,8 +7,8 @@ export const Localit = class Localit {
     }
 
     set(key, val, expire = null) {
-        if (!key || !val)
-            return console.error('Provide a key and a value');
+        if (!key)
+            return console.error('Localit: provide a key to store a value');
 
         if (typeof val == 'object')
             val = JSON.stringify(val);
