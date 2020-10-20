@@ -48,7 +48,7 @@ export const Localit = class Localit {
     get(key) {
         if (this.hasExpirationDate(this.getFullKey(key))) {
             if (this.hasExpired(this.getFullKey(key))) {
-                this.store.remove(key);
+                this.remove(key);
                 return null;
             }
         }
