@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "test": "parcel tests/index.html",
-    "build": "parcel build src/localit.js --out-dir ./ --out-file index.js --no-source-maps --experimental-scope-hoisting"
+    "build": "parcel build src/localit.js --out-dir ./ --out-file index.js --no-source-maps --experimental-scope-hoisting",
+    "patch": "npm version patch -m 'Minor bug fix'"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4"
