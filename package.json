@@ -13,11 +13,12 @@
     "ES6 class"
   ],
   "scripts": {
-    "test": "parcel tests/index.html",
+    "test": "jest",
     "build": "parcel build src/localit.js --out-dir ./ --out-file index.js --no-source-maps --experimental-scope-hoisting",
     "patch": "npm version patch -m 'Minor bug fix'"
   },
   "devDependencies": {
+    "jest": "^26.6.3",
     "parcel-bundler": "^1.12.4"
   }
 }

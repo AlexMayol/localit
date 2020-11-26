@@ -1,4 +1,4 @@
-export const Localit = class Localit {
+const Localit = class Localit {
 
     constructor({ domain = '', type = 'localStorage' } = {}) {
         this.store = (type == 'localStorage') ? localStorage : sessionStorage;
@@ -13,7 +13,7 @@ export const Localit = class Localit {
         if (typeof val == 'object')
             val = JSON.stringify(val);
 
-        this.store.setItem(`${this.getFullKey(key)}`, val);
+        this.store.setItem(this.getFullKey(key), val);
 
         expire && this.setExpiration(key, expire)
     }
@@ -54,8 +54,8 @@ export const Localit = class Localit {
     }
 
     get(key) {
-        if (this.hasExpirationDate(this.getFullKey(key))) {
-            if (this.hasExpired(this.getFullKey(key))) {
+        if (this.hasExpirationDate(key)) {
+            if (this.hasExpired(key)) {
                 this.remove(key);
                 return null;
             }
@@ -100,3 +100,4 @@ export const Localit = class Localit {
         this.store.clear();
     }
 }
+export {Localit};
