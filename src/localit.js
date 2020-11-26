@@ -22,9 +22,9 @@ const Localit = class Localit {
         // only minutes, days, hours and seconds allowed!
 
         const allowedFormats = ['h', 'd', 'm', 's'];
-        if(!allowedFormats.some(char => expire.includes(char)))
+        if (!allowedFormats.some(char => expire.includes(char)))
             return console.warn(`Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.`);
-            
+
 
         let expire_date = new Date();
         let add = null;
@@ -33,7 +33,7 @@ const Localit = class Localit {
             add = parseInt(expire.replace('s', ''));
             expire_date.setSeconds(expire_date.getSeconds() + add);
         }
-        
+
         if (expire.includes('m')) {
             add = parseInt(expire.replace('m', ''));
             expire_date.setMinutes(expire_date.getMinutes() + add);
@@ -100,4 +100,5 @@ const Localit = class Localit {
         this.store.clear();
     }
 }
-export {Localit};
+
+export { Localit };
