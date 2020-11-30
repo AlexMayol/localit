@@ -1,6 +1,6 @@
 # localit
 
-A simple JS class to wrap localStorage and sessionStorage functionality.
+A simple JS class to wrap localStorage and sessionStorage functionality. Supports expiration dates, so you can cache you data and retrieve it safely 🔥
 
 ## Install
 
@@ -9,14 +9,14 @@ A simple JS class to wrap localStorage and sessionStorage functionality.
 ## Example
 
 ```js
-import { localit } from "localit";
+import { Localit } from "localit";
 
-// you can pass `localStorage` or `sessionStorage` as parameter. Defaults to `localStorage`
+// You can pass `localStorage` or `sessionStorage` as parameter. Defaults to `localStorage`
 let store = new Localit();
 
 let data = [2, "red", { blue: "yellow" }];
 
-// this data will be deleted in exactly 5 days since it was saved
+// This data will be deleted in exactly 5 days since it was saved
 store.set("info", data, "5d");
 
 // Call this today
@@ -25,6 +25,24 @@ store.set("info", data, "5d");
 // Call this in 5 days
 console.log(store.get("info"));
 // null
+
+// Add a 'domain' to you store to automatically prefix the keys
+let store = new Localit({domain: 'tests'});
+let data = {hello:'world'};
+store.set('simple_object', data, '2h');
+
+// Now, you can retrieve the object with the get() method but it will be stores under the key 'tests_simple_object'
+console.log(store.get('simple_object'));
+//{hello:'world'}
+
+console.log(localStorage)
+/*
+Storage:{
+    length: 2,
+    tests_simple_object: "{"hello":"world"}"
+    tests_simple_object_expiration_date: ""2020-11-30T11:35:31.041Z""
+}
+*/
 ```
 
 ## API reference
