@@ -9,6 +9,7 @@
     "HTML5",
     "localStorage",
     "sessionStorage",
+    "cache",
     "store",
     "ES6 class"
   ],
