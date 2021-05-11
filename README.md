@@ -9,33 +9,32 @@ A simple JS class to wrap localStorage and sessionStorage functionality. Support
 ## Example
 
 ```js
-import { Localit } from "localit";
+import { localit } from "localit";
 
 // You can pass `localStorage` or `sessionStorage` as parameter. Defaults to `localStorage`
-let store = new Localit();
 
 let data = [2, "red", { blue: "yellow" }];
 
 // This data will be deleted in exactly 5 days since it was saved
-store.set("info", data, "5d");
+localit.set("info", data, "5d");
 
 // Call this today
 // [2, 'red', {blue: 'yellow'}]
 
 // Call this in 5 days
-console.log(store.get("info"));
+console.log(localit.get("info"));
 // null
 
 // Add a 'domain' to you store to automatically prefix the keys
-let store = new Localit({domain: 'tests'});
-let data = {hello:'world'};
-store.set('simple_object', data, '2h');
+localit.config({ domain: "tests" });
+let data = { hello: "world" };
+localit.set("simple_object", data, "2h");
 
 // Now, you can retrieve the object with the get() method but it will be stores under the key 'tests_simple_object'
-console.log(store.get('simple_object'));
+console.log(localit.get("simple_object"));
 //{hello:'world'}
 
-console.log(localStorage)
+console.log(localStorage);
 /*
 Storage:{
     length: 2,

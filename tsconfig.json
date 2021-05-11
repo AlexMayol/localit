@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "outDir": "./dist",
+    "declaration": true,
+    "lib": ["es6", "dom", "es7", "es2017"]
+  },
+  "include": ["src/localit.ts"]
+}

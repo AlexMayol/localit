@@ -1,26 +1,29 @@
-import { Localit } from '../src/localit';
+import { localit as store } from '../dist/localit';
 
-test('set() and get() for objects', () => {
-    const store = new Localit({ domain: 'tests' })
-    let key = 'objects'
-    let result = {
-        complex: false,
-        optimal: false,
-        brave: 'definitely'
-    };
-    store.set(key, result);
-    expect(store.get(key)).toEqual(result);
-});
-
-test('set and modify object, different data', () => {
-    const store = new Localit({ domain: 'tests' })
-    let key = 'diffs'
-    let result = {
-        complex: false,
-        optimal: false,
-        brave: 'definitely'
-    };
-    store.set(key, result);
-    result.newProp = true
-    expect(store.get(key)).not.toEqual(result);
-});
+describe('Saving and retrieving objects', () => {
+    store.config({ domain: 'object_tests' })
+    store.bust();
+    let key = 'cool_object';
+    let value = {
+        js: true,
+        ts: true,
+        css: ['display', 'font-size'],
+        html: {
+            div: true,
+            span: false
+        }
+    }
+    test('object is stored', () => {
+        store.set(key, value)
+        expect(localStorage.length).toBe(1)
+    })
+    test('array is encoded properly', () => {
+        let { css } = store.get(key)
+        expect(css).toEqual(value.css)
+    })
+    test('object is encoded properly', () => {
+        let { html } = store.get(key)
+        expect(html.div).toBeTruthy()
+        expect(html.span).toBeFalsy()
+    })
+})
