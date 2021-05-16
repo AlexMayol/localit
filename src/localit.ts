@@ -1,9 +1,11 @@
-// https://www.tsmean.com/articles/how-to-write-a-typescript-library/
-// https://www.tsmean.com/articles/how-to-write-a-typescript-library/local-consumer/
+type LocalitConfig = {
+  domain?: string;
+  type?: string;
+};
 
 let DOMAIN = "";
 const EXPIRE = "_expiration_date";
-let store: Storage = localStorage;
+let store = localStorage;
 
 const getFullKey = (key: string) => {
   return `${DOMAIN}${key}`;
@@ -52,10 +54,10 @@ const hasExpired = (key: string) => {
 };
 
 export const localit = {
-  config({ type = "localStorage", domain = DOMAIN }: { type: string; domain: string }) {
+  config({ domain, type = "localStorage" }: LocalitConfig) {
     store = type === "localStorage" ? localStorage : sessionStorage;
-    if (domain !== "") DOMAIN = `${domain}_`;
-    else DOMAIN = domain;
+    if (domain) DOMAIN = `${domain}_`;
+    else DOMAIN = "";
   },
   set(key: string, value: any, expirationTime?: string) {
     if (!key) return console.error("Localit: provide a key to store a value");
@@ -71,9 +73,9 @@ export const localit = {
       return null;
     }
     try {
-      return JSON.parse(store.getItem(getFullKey(key))!);
+      return JSON.parse(store.getItem(getFullKey(key)));
     } catch (e) {
-      return null;
+      return store.getItem(getFullKey(key));
     }
   },
   remove(key: string) {
@@ -85,7 +87,7 @@ export const localit = {
     DOMAIN = `${domain}_`;
   },
   clearDomain(domain: string = DOMAIN) {
-    for (const key of Object.keys(store)) if (key.includes(`${domain}_`)) store.removeItem(key);
+    for (let key of Object.keys(store)) if (key.includes(`${domain}_`)) store.removeItem(key);
   },
   bust() {
     store.clear();

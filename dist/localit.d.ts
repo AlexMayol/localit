@@ -1,8 +1,9 @@
+declare type LocalitConfig = {
+    domain?: string;
+    type?: string;
+};
 declare const localit: {
-    config({ type, domain }: {
-        type: string;
-        domain: string;
-    }): void;
+    config({ domain, type }: LocalitConfig): void;
     set(key: string, value: any, expirationTime?: string): void;
     get(key: string): any;
     remove(key: string): void;
