@@ -70,7 +70,11 @@ export const localit = {
       this.remove(key);
       return null;
     }
-    return JSON.parse(store.getItem(getFullKey(key)) || "null");
+    try {
+      return JSON.parse(store.getItem(getFullKey(key))!);
+    } catch (e) {
+      return null;
+    }
   },
   remove(key: string) {
     store.removeItem(getFullKey(key));
