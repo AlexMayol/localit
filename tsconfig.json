@@ -1,10 +1,16 @@
 {
   "compilerOptions": {
+    "target": "ES2015",
     "module": "commonjs",
-    "target": "es5",
-    "outDir": "./dist",
+    "strict": true,
     "declaration": true,
-    "lib": ["es6", "dom", "es7", "es2017"]
+    "moduleResolution": "node",
+    "outDir": "./dist/",
+    "types": ["jest"],
+    "lib": ["ES6", "DOM"]
   },
-  "include": ["src/localit.ts"]
+  "include": ["src/*.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"],
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Recommended"
 }

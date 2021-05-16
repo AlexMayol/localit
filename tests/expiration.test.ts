@@ -1,6 +1,5 @@
-import wait from "waait";
 import "regenerator-runtime/runtime";
-import { localit as store } from "../dist/localit";
+import { localit as store } from "../dist/localit.js";
 
 describe("Saving and retrieving objects", () => {
   const domain = "expiration_tests";
@@ -24,7 +23,7 @@ describe("Saving and retrieving objects", () => {
   });
   test("value is no longer retrievable after the expiration date", async () => {
     jest.setTimeout(30000);
-    await wait(11000);
+    await new Promise((resolve) => setTimeout(resolve, 11000));
     expect(store.get(key)).toEqual(null);
   });
   test("localStorage is empty after the expiration date has passed", () => {
