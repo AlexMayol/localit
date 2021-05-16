@@ -19,7 +19,7 @@
     "TypeScript"
   ],
   "scripts": {
-    "declarations": "npx tsc src/localit.ts ",
+    "declarations": "npx tsc src/localit.ts",
     "dev": "parcel src/localit.ts --no-source-maps",
     "build": "parcel build src/localit.ts --out-dir ./dist --no-source-maps --experimental-scope-hoisting",
     "patch": "npm version patch -m 'Minor bug fix'",
@@ -30,12 +30,22 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
+    "@types/jest": "^26.0.23",
+    "@typescript-eslint/eslint-plugin": "^4.23.0",
+    "@typescript-eslint/parser": "^4.23.0",
     "babel-jest": "^26.6.3",
+    "eslint": "^7.26.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.23.2",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
     "jest": "^26.6.3",
     "parcel": "1.12.3",
     "parcel-bundler": "1.12.3",
     "regenerator-runtime": "^0.13.7",
     "tsc": "^1.20150623.0",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.2.4",
     "waait": "^1.0.5"
   }
