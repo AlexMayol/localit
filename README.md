@@ -46,35 +46,46 @@ Storage:{
 
 ## API reference
 
-### Constructor({domain = '', type = 'localStorage'} = {})
-
-Localit is a JS class, so you need to instantiate it.
+### config({domain = '', type = 'localStorage'})
 
 ```js
-const store = new Localit();
+import { localit as store } from "localit";
 ```
 
-You can define a domain on this constructor, so all the keys you save will have it appended.
+You can define a domain on this `config` method, so all the keys you save afterwards will have it appended.
 
 ```js
-const store = new Localit({ domain: "pets" });
+store.config({ domain: "pets" });
 store.set("dog", "Will");
 //pets_dog = 'Will'
 ```
 
-### set(key, val, expritation_date = null)
+You can also specify if you want to use `sessionStorage` instead of `localStorage`
+
+```js
+store.config({ type: "sessionStorage" });
+```
+
+### set(key, val, expritationDate = null)
 
 Localit takes care of objects so you don't neet do parse them yourself with `JSON.stringify`, which I find extremely annoying.
 
 ```js
+// Just store any kind of data without parsing it
 store.set("info", ["hello", "world"]);
+// As an optional third parameter, you can set an expiration date
 store.set("more_info", { avengers: "endgame" }, "5d");
 ```
 
+The **expiration date** parameter accepts strings with a number and the type of time. For example, `5d` means that key will only be valid for 5 days, `30d` is 30 days and `132m` is 132 minutes.
+
+The letter must be lowercase and only seconds(`s`), minutes (`m`), hours (`h`) and days (`d`) are allowed.
+
 ### get(key)
 
-Like `get(...)`, you will recieve the data in the original format it was stores: string or object.
-If you set an expiration date when you save the data, you'll get `null` if the current date is later.
+You will recieve the data in the original format it was stored: string, number, array or object... Localit handles the requerid parsing under the hood so you don't need to call `JSON.parse(...)`.
+
+If you set an expiration date while saving the data, you'll get `null` if the current date is past the specified one.
 
 ```js
 store.get("more_info");
@@ -83,7 +94,7 @@ store.get("more_info");
 
 ### remove(key)
 
-Removes the data and the expiration date register
+Removes the data and the expiration date key
 
 ```js
 store.remove("info");
@@ -115,9 +126,9 @@ store.set("dove", "200");
 
 console.log(localStorage);
 /*
+length: 4
 birds_count_dove: "200"
 birds_count_eagle: "10"
-length: 4
 mammals_count_cat: "13"
 mammals_count_dog: "21"
 */
@@ -125,9 +136,9 @@ store.clearDomain("mammals_count");
 console.log(localStorage);
 
 /*
+length: 2
 birds_count_dove: "200"
 birds_count_eagle: "10"
-length: 2
 */
 ```
 
@@ -153,4 +164,4 @@ I then thought it'd be cool to have some sort of expiration time for the data an
 
 ## Running locally
 
-The workflow right now is pretty basic. The source code is on `src/localit.js`. You can generate the transpiled version by running `npm run build`, using Parcel under the hood.
+The workflow right now is pretty basic. The source code is on `src/localit.ts`. You can generate the transpiled version by running `npm run build`, using a simple Rollup config.
