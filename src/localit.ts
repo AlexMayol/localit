@@ -14,9 +14,8 @@ const getFullKey = (key: string) => {
 const setExpiration = (key: string, expirationTime: string) => {
   // only minutes, days, hours and seconds allowed!
   const allowedFormats = ["h", "d", "m", "s"];
-  if (!allowedFormats.some((char) => expirationTime.includes(char))) {
+  if (!allowedFormats.some((char) => expirationTime.includes(char)))
     return console.warn("Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.");
-  }
 
   const expirationDate = new Date();
   let add = 0;
@@ -44,9 +43,7 @@ const setExpiration = (key: string, expirationTime: string) => {
   store.setItem(`${getFullKey(key)}${EXPIRE}`, JSON.stringify(expirationDate));
 };
 
-const hasExpirationDate = (key: string) => {
-  return store.getItem(`${getFullKey(key)}${EXPIRE}`) !== null;
-};
+const hasExpirationDate = (key: string) => store.getItem(`${getFullKey(key)}${EXPIRE}`) !== null;
 
 const hasExpired = (key: string) => {
   const expirationDate: string = JSON.parse(store.getItem(`${getFullKey(key)}${EXPIRE}`) || "null");
