@@ -4,21 +4,26 @@ describe("Saving and retrieving arrays", () => {
   store.config({ domain: "array_tests" });
   store.bust();
 
-  const key = "cool_array";
-  const value = [1, "two", { three: 3 }, 4, false];
+  const basicArray = {
+    key: "basic",
+    value: [1, "two", { three: 3 }, 4, false],
+  };
 
-  test("array is stored", () => {
-    store.set(key, value);
+  test("Array is stored", () => {
+    store.set(basicArray.key, basicArray.value);
     expect(localStorage.length).toBe(1);
   });
-  test("array is retieved properly", () => {
-    const array = store.get(key);
+
+  test("Array is retieved properly", () => {
+    const array = store.get(basicArray.key);
     expect(array.length).toEqual(5);
+    expect(array[2]).toEqual(basicArray.value[2]);
   });
+
   test("array is not modified in memory", () => {
-    const array = store.get(key);
+    const array = store.get(basicArray.key);
     array.push(5);
     expect(array.length).toEqual(6);
-    expect(store.get(key).length).toEqual(5);
+    expect(store.get(basicArray.key).length).toEqual(5);
   });
 });
