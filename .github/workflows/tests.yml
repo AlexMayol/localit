@@ -1,5 +1,4 @@
 name: localit tests
-description: Unit Tests for localit
 on: [push, pull_request]
 
 jobs:
