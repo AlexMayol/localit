@@ -1,17 +1,26 @@
 type LocalitConfig = {
   domain?: string;
-  type?: string;
+  type?: "localStorage" | "sessionStorage";
 };
 
 let DOMAIN = "";
 const EXPIRE = "_expiration_date";
 let store = localStorage;
 
-const getFullKey = (key: string) => {
-  return `${DOMAIN}${key}`;
-};
+/**
+ *
+ * @param key - the key to retrieve
+ * @returns the actual key stored in the Storage
+ */
+const getFullKey = (key: string): string => `${DOMAIN}${key}`;
 
-const setExpiration = (key: string, expirationTime: string) => {
+/**
+ *
+ * @param key - the key to store with an expiration time
+ * @param expirationTime - string with the amount of time we want to store the value. It allows "Xs", "Xm", "Xh", "Xd", where X can be any number.
+ * @returns the actual key stored in the Storage
+ */
+const setExpiration = (key: string, expirationTime: string): void => {
   // only minutes, days, hours and seconds allowed!
   const allowedFormats = ["h", "d", "m", "s"];
   if (!allowedFormats.some((char) => expirationTime.includes(char)))
@@ -43,20 +52,32 @@ const setExpiration = (key: string, expirationTime: string) => {
   store.setItem(`${getFullKey(key)}${EXPIRE}`, JSON.stringify(expirationDate));
 };
 
-const hasExpirationDate = (key: string) => store.getItem(`${getFullKey(key)}${EXPIRE}`) !== null;
+const hasExpirationDate = (key: string): boolean => store.getItem(`${getFullKey(key)}${EXPIRE}`) !== null;
 
-const hasExpired = (key: string) => {
+const hasExpired = (key: string): boolean => {
   const expirationDate: string = JSON.parse(store.getItem(`${getFullKey(key)}${EXPIRE}`) || "null");
   return new Date() > new Date(expirationDate);
 };
 
 export const localit = {
-  config({ domain, type = "localStorage" }: LocalitConfig) {
+  /**
+   *
+   * @param domain - name of the domain that will prefix all the stored keys. Example, given a "books" domain, the key "Alone" will generate the key "books_Alone"
+   * @param type - the type of Storage you want to use: "localStorage" (default) or "sessionStorage"
+   */
+  config({ domain = null, type = "localStorage" }: LocalitConfig): void {
     store = type === "localStorage" ? localStorage : sessionStorage;
     if (domain) DOMAIN = `${domain}_`;
     else DOMAIN = "";
   },
-  set(key: string, value: any, expirationTime?: string) {
+  /**
+   * Retrieves the value associated with the given key from the Storage. It uses the current domain.
+   * @param key - key that will be used to retrieve from the Storage
+   * @param value - stored value in the Storage. 
+   * @param expirationTime - seconds, minutes, hours or days that the value will remain stored.
+      It will be deleted after that. Example: "5d" for five days or "3h" for three hours.
+   */
+  set(key: string, value: any, expirationTime?: string): void {
     if (!key) return console.error("Localit: provide a key to store a value");
 
     if (typeof value === "object") value = JSON.stringify(value);
@@ -64,7 +85,11 @@ export const localit = {
     store.setItem(getFullKey(key), value);
     expirationTime && setExpiration(key, expirationTime);
   },
-  get(key: string) {
+  /**
+   * Retrieves the value associated with the given key from the Storage. It uses the current domain.
+   * @param key - key that will be used to retrieve from the Storage
+   */
+  get(key: string): any {
     if (hasExpirationDate(key) && hasExpired(key)) {
       this.remove(key);
       return null;
@@ -75,18 +100,31 @@ export const localit = {
       return store.getItem(getFullKey(key));
     }
   },
-  remove(key: string) {
+  /**
+   * Removes the given key from the Storage. It uses the current domain.
+   * @param key - key that will be removed from the Storage
+   */
+  remove(key: string): void {
     store.removeItem(getFullKey(key));
     store.removeItem(`${getFullKey(key)}${EXPIRE}`);
   },
-
-  setDomain(domain: string) {
+  /**
+   * Removes all the stored values in the Storage
+   * @param domain - Name of the domain that will prefix all the keys until changed again
+   */
+  setDomain(domain: string): void {
     DOMAIN = `${domain}_`;
   },
-  clearDomain(domain: string = DOMAIN) {
+  /**
+   * Removes all the stored values for that domain
+   */
+  clearDomain(domain: string = DOMAIN): void {
     for (let key of Object.keys(store)) if (key.includes(`${domain}_`)) store.removeItem(key);
   },
-  bust() {
+  /**
+   * Removes all the stored values in the Storage
+   */
+  bust(): void {
     store.clear();
   },
 };
