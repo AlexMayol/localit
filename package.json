@@ -1,6 +1,6 @@
 {
   "name": "localit",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "license": "MIT",
   "description": "Simple wrapper class for localStorage and sessionStorage",
   "repository": "alexmayol/localit",
