@@ -142,3 +142,5 @@ export const localit = {
     store.clear();
   },
 };
+
+export type TLocalit = typeof localit;

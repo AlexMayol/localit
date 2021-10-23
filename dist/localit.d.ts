@@ -44,5 +44,6 @@ declare const localit: {
      */
     bust(): void;
 };
+declare type TLocalit = typeof localit;
 
-export { localit };
+export { TLocalit, localit };
