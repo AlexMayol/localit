@@ -24,6 +24,21 @@ describe("Simple tests", () => {
     expect(included).toBeTruthy();
   });
 
+  test("clearDomain works as expected", () => {
+    store.bust();
+
+    store.setDomain("clearDomain_test");
+    store.set("test1", 1);
+    store.set("test2", 2);
+    store.setDomain("random_domain");
+    store.set("test1", 1);
+    store.set("test2", 2);
+
+    expect(localStorage.length).toBe(4);
+    store.clearDomain("random_domain");
+    expect(localStorage.length).toBe(2);
+  });
+
   test("localStorage is empty after clearing it", () => {
     store.bust();
     expect(localStorage.length).toBe(0);

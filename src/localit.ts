@@ -3,8 +3,8 @@ type LocalitConfig = {
   type?: "localStorage" | "sessionStorage";
 };
 
-let DOMAIN: string = "";
-const EXPIRE: string = "_expiration_date";
+let DOMAIN = "";
+const EXPIRE = "_expiration_date";
 let store: Storage = localStorage;
 
 /**
@@ -133,7 +133,7 @@ export const localit = {
    * @param domain - Name of the domain we want to remove
    */
   clearDomain(domain: string = DOMAIN): void {
-    for (let key of Object.keys(store)) if (key.includes(`${domain}_`)) store.removeItem(key);
+    for (const key of Object.keys(store)) if (key.includes(`${domain}_`)) store.removeItem(key);
   },
   /**
    * Removes all the stored values in Storage
