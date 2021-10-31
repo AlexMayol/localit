@@ -122,6 +122,16 @@ export const localit = {
     store.removeItem(getExpirationKey(key));
   },
   /**
+   * Retrieves the value associated with the given key from the Storage and then removes it. It uses the current domain.
+   * @param key - Key to get the value of and then remove from Storage. It uses the current domain.
+   *
+   */
+  getAndRemove(key: string): any {
+    const res = this.get(key);
+    this.remove(key);
+    return res;
+  },
+  /**
    * Sets a new domain to prefix the next stored keys
    * @param domain - Name of the domain that will prefix all the keys until changed again
    */

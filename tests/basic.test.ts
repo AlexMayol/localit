@@ -43,4 +43,12 @@ describe("Simple tests", () => {
     store.bust();
     expect(localStorage.length).toBe(0);
   });
+  test.only("saves a value and deletes it afterwards", () => {
+    store.bust();
+    store.set("simple", "test");
+    const res = store.getAndRemove("simple");
+    expect(res).toBe("test");
+    expect(store.get("simple")).toBe(null);
+    expect(localStorage.length).toBe(0);
+  });
 });
