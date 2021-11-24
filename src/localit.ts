@@ -24,37 +24,24 @@ const getExpirationKey = (key: string): string => `${getFullKey(key)}${EXPIRE}`;
  * @param expirationTime - string with the amount of time we want to store the value. It allows "Xs", "Xm", "Xh", "Xd", where X can be any number.
  */
 const setExpiration = (key: string, expirationTime: string): void => {
-  // only minutes, days, hours and seconds allowed!
-  const allowedFormats = ["h", "d", "m", "s"];
-  if (!allowedFormats.some((char) => expirationTime.includes(char)))
-    return console.warn("Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.");
-
   const expirationDate = new Date();
-  let add = 0;
-
-  if (expirationTime.includes("s")) {
-    add = +expirationTime.replace("s", "");
-    expirationDate.setSeconds(expirationDate.getSeconds() + add);
-  }
-
-  if (expirationTime.includes("m")) {
-    add = +expirationTime.replace("m", "");
-    expirationDate.setMinutes(expirationDate.getMinutes() + add);
-  }
-
-  if (expirationTime.includes("h")) {
-    add = +expirationTime.replace("h", "");
-    expirationDate.setHours(expirationDate.getHours() + add);
-  }
-
-  if (expirationTime.includes("d")) {
-    add = +expirationTime.replace("d", "");
-    expirationDate.setDate(expirationDate.getDate() + add);
-  }
-
-  store.setItem(getExpirationKey(key), JSON.stringify(expirationDate));
+  
+  const timeFormats = {
+    h: (time: number) => expirationDate.setHours(expirationDate.getHours()+ time),
+    d: (time: number) => expirationDate.setDate(expirationDate.getDate()+ time),
+    m: (time: number) => expirationDate.setMinutes(expirationDate.getMinutes()+ time),
+    s: (time: number) => expirationDate.setSeconds(expirationDate.getSeconds()+ time)
+  };
+    // only minutes, days, hours and seconds allowed!
+  const allowedFormats = Object.keys(timeFormats);
+  const timeKey = expirationTime[expirationTime.length-1];
+  const time = Number(expirationTime.replace(timeKey, ""));
+  if (!allowedFormats.some((char) => timeKey === char) || isNaN(time))
+    return console.warn("Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.");
+  
+  store.setItem(getExpirationKey(key), JSON.stringify(timeFormats[timeKey](time)));
 };
-
+  
 /**
  * @param key - the key to check if it has an expiration date
  * @return whether or not there is an expiration date for the given key

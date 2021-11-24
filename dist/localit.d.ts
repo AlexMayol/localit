@@ -30,8 +30,9 @@ declare const localit: {
      */
     remove(key: string): void;
     /**
+     * Retrieves the value associated with the given key from the Storage and then removes it. It uses the current domain.
+     * @param key - Key to get the value of and then remove from Storage. It uses the current domain.
      *
-     * @param domain
      */
     getAndRemove(key: string): any;
     /**

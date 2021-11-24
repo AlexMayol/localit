@@ -4,7 +4,7 @@ const justWait = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-describe("Saving and retrieving objects", () => {
+describe.only("Saving and retrieving objects", () => {
   const domain = "expiration_tests";
   const key = "timed_value";
   const value = "A temporary string";
@@ -44,10 +44,18 @@ describe("Saving and retrieving objects", () => {
     expect(localStorage.length).toBe(4);
   });
 
-  test("After 4 seconds, only one value can be retireved but two exists", async () => {
+  test("After 4 seconds, only one value can be retrieved but two exists", async () => {
     await justWait(4000);
     expect(localStorage.length).toBe(4);
     expect(store.get("one")).toBeNull();
     expect(store.get("two")).toBe(2);
   });
+
+  test("Storing bad time format", () => {
+    const consoleMock = jest.spyOn(console, "warn");
+    store.set("three",3, "10ddds");
+    expect(consoleMock.mock.calls.length).toBe(1);
+    expect(localStorage.length).toBe(3);
+  });
+
 });
