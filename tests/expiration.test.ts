@@ -4,7 +4,7 @@ const justWait = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-describe.only("Saving and retrieving objects", () => {
+describe("Saving and retrieving objects", () => {
   const domain = "expiration_tests";
   const key = "timed_value";
   const value = "A temporary string";
