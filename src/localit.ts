@@ -36,7 +36,7 @@ const setExpiration = (key: string, expirationTime: string): void => {
   const allowedFormats = Object.keys(timeFormats);
   const timeKey = expirationTime[expirationTime.length-1];
   const time = Number(expirationTime.replace(timeKey, ""));
-  if (!allowedFormats.some((char) => timeKey === char) || isNaN(time))
+  if (expirationTime.length < 2 || !allowedFormats.some((char) => timeKey === char) || isNaN(time))
     return console.warn("Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.");
   
   store.setItem(getExpirationKey(key), JSON.stringify(timeFormats[timeKey](time)));

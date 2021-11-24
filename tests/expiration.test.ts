@@ -53,9 +53,11 @@ describe.only("Saving and retrieving objects", () => {
 
   test("Storing bad time format", () => {
     const consoleMock = jest.spyOn(console, "warn");
-    store.set("three",3, "10ddds");
-    expect(consoleMock.mock.calls.length).toBe(1);
-    expect(localStorage.length).toBe(3);
+    store.set("three",3, "10ddss");
+    store.set("three bad",3, "s");
+    
+    expect(consoleMock.mock.calls.length).toBe(2);
+    expect(localStorage.length).toBe(4);
   });
 
 });
