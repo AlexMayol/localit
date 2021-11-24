@@ -44,10 +44,20 @@ describe("Saving and retrieving objects", () => {
     expect(localStorage.length).toBe(4);
   });
 
-  test("After 4 seconds, only one value can be retireved but two exists", async () => {
+  test("After 4 seconds, only one value can be retrieved but two exists", async () => {
     await justWait(4000);
     expect(localStorage.length).toBe(4);
     expect(store.get("one")).toBeNull();
     expect(store.get("two")).toBe(2);
   });
+
+  test("Storing bad time format", () => {
+    const consoleMock = jest.spyOn(console, "warn");
+    store.set("three",3, "10ddss");
+    store.set("three bad",3, "s");
+    
+    expect(consoleMock.mock.calls.length).toBe(2);
+    expect(localStorage.length).toBe(4);
+  });
+
 });
