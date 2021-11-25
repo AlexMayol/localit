@@ -5,7 +5,7 @@ import { terser } from "rollup-plugin-terser";
 const name = require("./package.json").main.replace(/\.js$/, "");
 const bundle = (config) => ({
   ...config,
-  input: "src/localit.ts",
+  input: "src/index.ts",
   external: (id) => !/^[./]/.test(id),
 });
 
