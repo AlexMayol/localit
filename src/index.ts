@@ -3,8 +3,17 @@ type LocalitConfig = {
   type?: "localStorage" | "sessionStorage";
 };
 
+type LocalitStore = {
+  value:any,
+  meta: LocalitMetadata
+}
+
+type LocalitMetadata = {
+  created: number,
+  expire?: number
+}
+
 let DOMAIN = "";
-const EXPIRE = "_expiration_date";
 let store: Storage = localStorage;
 
 /**
@@ -14,16 +23,10 @@ let store: Storage = localStorage;
 const getFullKey = (key: string): string => `${DOMAIN}_${key}`;
 
 /**
- * @param key - the unprefixed key to save with an expiration time
- * @returns the actual key stored in the Storage
- */
-const getExpirationKey = (key: string): string => `${getFullKey(key)}${EXPIRE}`;
-
-/**
  * @param key - the key to store with an expiration time
  * @param expirationTime - string with the amount of time we want to store the value. It allows "Xs", "Xm", "Xh", "Xd", where X can be any number.
  */
-const setExpiration = (key: string, expirationTime: string): void => {
+const setExpiration = (expirationTime: string): number => {
   const expirationDate = new Date();
 
   const timeFormats = {
@@ -36,25 +39,20 @@ const setExpiration = (key: string, expirationTime: string): void => {
   const allowedFormats = Object.keys(timeFormats);
   const timeKey = expirationTime[expirationTime.length - 1];
   const time = Number(expirationTime.replace(timeKey, ""));
-  if (expirationTime.length < 2 || !allowedFormats.some((char) => timeKey === char) || isNaN(time))
-    return console.warn("Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.");
+  if (expirationTime.length < 2 || !allowedFormats.some((char) => timeKey === char) || isNaN(time)){
+    console.warn("Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.");
+    return;
+  }
 
-  store.setItem(getExpirationKey(key), JSON.stringify(timeFormats[timeKey](time)));
+  return timeFormats[timeKey](time);
 };
-
-/**
- * @param key - the key to check if it has an expiration date
- * @return whether or not there is an expiration date for the given key
- */
-const hasExpirationDate = (key: string): boolean => store.getItem(getExpirationKey(key)) !== null;
 
 /**
  * @param key - the key to check if it has expired
  * @return whether or not there is an expiration date for the given key
  */
-const hasExpired = (key: string): boolean => {
-  const expirationDate: string = JSON.parse(store.getItem(getExpirationKey(key)));
-  return new Date() > new Date(expirationDate);
+const hasExpired = (time: number): boolean => {
+  return new Date() > new Date(time);
 };
 
 const config = ({ domain = null, type = "localStorage" }: LocalitConfig): void => {
@@ -65,27 +63,29 @@ const config = ({ domain = null, type = "localStorage" }: LocalitConfig): void =
 const set = (key: string, value: any, expirationTime?: string): void => {
   if (!key) return console.error("Localit: provide a key to store the value");
 
-  if (typeof value === "object") value = JSON.stringify(value);
+  const storeObject: LocalitStore = {
+    value,
+    meta: {
+      created: new Date().getTime(),
+      expire: expirationTime ? setExpiration(expirationTime): undefined
+    }
+  };
 
-  store.setItem(getFullKey(key), value);
-  expirationTime && setExpiration(key, expirationTime);
+  store.setItem(getFullKey(key), JSON.stringify(storeObject));
 };
 
 const get = (key: string): any => {
-  if (hasExpirationDate(key) && hasExpired(key)) {
+  const item: LocalitStore = JSON.parse(store.getItem(getFullKey(key)));
+
+  if (item?.meta?.expire && hasExpired(item.meta.expire)) {
     remove(key);
     return null;
   }
-  try {
-    return JSON.parse(store.getItem(getFullKey(key)));
-  } catch (_) {
-    return store.getItem(getFullKey(key));
-  }
+  return item?.value || null;
 };
 
 const remove = (key: string): void => {
   store.removeItem(getFullKey(key));
-  store.removeItem(getExpirationKey(key));
 };
 
 const getAndRemove = (key: string): any => {
