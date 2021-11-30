@@ -21,7 +21,7 @@ describe("Saving and retrieving objects", () => {
   test("Expiration metadata is present in localStorage", () => {
     const finalKey = `${domain}_${key}`;
     const item = JSON.parse(localStorage.getItem(finalKey));
-    expect(item.meta.expire).toBeDefined();
+    expect(item.meta.expiresAt).toBeDefined();
   });
 
   test("Value is retrievable within its life span", () => {

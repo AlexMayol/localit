@@ -9,8 +9,8 @@ type LocalitStore = {
 }
 
 type LocalitMetadata = {
-  created: number,
-  expire?: number
+  createdAt: number,
+  expiresAt?: number
 }
 
 let DOMAIN = "";
@@ -51,9 +51,7 @@ const setExpiration = (expirationTime: string): number => {
  * @param key - the key to check if it has expired
  * @return whether or not there is an expiration date for the given key
  */
-const hasExpired = (time: number): boolean => {
-  return new Date() > new Date(time);
-};
+const hasExpired = (time: number): boolean => new Date() > new Date(time);
 
 const config = ({ domain = null, type = "localStorage" }: LocalitConfig): void => {
   store = type === "localStorage" ? localStorage : sessionStorage;
@@ -66,8 +64,8 @@ const set = (key: string, value: any, expirationTime?: string): void => {
   const storeObject: LocalitStore = {
     value,
     meta: {
-      created: new Date().getTime(),
-      expire: expirationTime ? setExpiration(expirationTime): undefined
+      createdAt: new Date().getTime(),
+      expiresAt: expirationTime && setExpiration(expirationTime)
     }
   };
 
@@ -77,7 +75,7 @@ const set = (key: string, value: any, expirationTime?: string): void => {
 const get = (key: string): any => {
   const item: LocalitStore = JSON.parse(store.getItem(getFullKey(key)));
 
-  if (item?.meta?.expire && hasExpired(item.meta.expire)) {
+  if (item?.meta?.expiresAt && hasExpired(item.meta.expiresAt)) {
     remove(key);
     return null;
   }
