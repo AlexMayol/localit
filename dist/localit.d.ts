@@ -49,6 +49,7 @@ declare const localit: {
      * Removes all the stored values in Storage
      */
     bust(): void;
+    onChange(key: string, callback: (value: any) => void): void;
 };
 declare type TLocalit = typeof localit;
 

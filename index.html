@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Testin</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    hola
+  </body>
+
+  <script type="text/javascript" src="dist/localit.js"></script>
+  <script type="text/javascript">
+    let storage;
+    const domain = "niko";
+    const key = "test";
+    window.onload = () => {
+      storage = localit.localit;
+      storage.config({
+        domain
+      });
+
+      storage.onChange(`${domain}_${key}`, (data) => {
+        alert(data);
+      });
+
+      storage.set(key, { data: "data" });
+      storage.set(key, { data: "data2" });
+      storage.getAndRemove(key);
+      storage.set(key, { data: "data3" });
+      storage.remove(key);
+      storage.set(key, { data: "data4" });
+      storage.clearDomain(domain);
+      storage.set(key, { data: "data5" });
+      storage.bust();
+    };
+  </script>
+</html>
