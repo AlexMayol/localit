@@ -9,7 +9,6 @@ type LocalitStore = {
 }
 
 type LocalitMetadata = {
-  createdAt: number,
   expiresAt?: number
 }
 
@@ -64,7 +63,6 @@ const set = (key: string, value: any, expirationTime?: string): void => {
   const storeObject: LocalitStore = {
     value,
     meta: {
-      createdAt: new Date().getTime(),
       expiresAt: expirationTime && setExpiration(expirationTime)
     }
   };
