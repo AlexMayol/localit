@@ -4,16 +4,17 @@ type LocalitConfig = {
 };
 
 type LocalitStore = {
-  value:any,
-  meta: LocalitMetadata
-}
+  value: any;
+  meta: LocalitMetadata;
+};
 
 type LocalitMetadata = {
-  expiresAt?: number
-}
+  expiresAt?: number;
+};
 
 let DOMAIN = "";
 let store: Storage = localStorage;
+const listeners = {};
 
 /**
  * @param key - the unprefixed key to retrieve
@@ -29,17 +30,27 @@ const setExpiration = (expirationTime: string): number => {
   const expirationDate = new Date();
 
   const timeFormats = {
-    h: (time: number) => expirationDate.setHours(expirationDate.getHours() + time),
-    d: (time: number) => expirationDate.setDate(expirationDate.getDate() + time),
-    m: (time: number) => expirationDate.setMinutes(expirationDate.getMinutes() + time),
-    s: (time: number) => expirationDate.setSeconds(expirationDate.getSeconds() + time),
+    h: (time: number) =>
+      expirationDate.setHours(expirationDate.getHours() + time),
+    d: (time: number) =>
+      expirationDate.setDate(expirationDate.getDate() + time),
+    m: (time: number) =>
+      expirationDate.setMinutes(expirationDate.getMinutes() + time),
+    s: (time: number) =>
+      expirationDate.setSeconds(expirationDate.getSeconds() + time)
   };
   // only minutes, days, hours and seconds allowed!
   const allowedFormats = Object.keys(timeFormats);
   const timeKey = expirationTime[expirationTime.length - 1];
   const time = Number(expirationTime.replace(timeKey, ""));
-  if (expirationTime.length < 2 || !allowedFormats.some((char) => timeKey === char) || isNaN(time)){
-    console.warn("Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.");
+  if (
+    expirationTime.length < 2 ||
+    !allowedFormats.some((char) => timeKey === char) ||
+    isNaN(time)
+  ) {
+    console.warn(
+      "Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved."
+    );
     return;
   }
 
@@ -52,7 +63,28 @@ const setExpiration = (expirationTime: string): number => {
  */
 const hasExpired = (time: number): boolean => new Date() > new Date(time);
 
-const config = ({ domain = null, type = "localStorage" }: LocalitConfig): void => {
+const on = (event: string, callback: (value: any) => void): void => {
+  if (!listeners[event]) {
+    listeners[event] = [];
+  }
+  listeners[event].push(callback);
+};
+
+const emit = (event: string, ...data: any): void => {
+  if (!listeners[event]) {
+    return null;
+  }
+
+  for (let i = 0; i < listeners[event].length; i++) {
+    const callback = listeners[event][i];
+    callback(...data);
+  }
+};
+
+const config = ({
+  domain = null,
+  type = "localStorage"
+}: LocalitConfig): void => {
   store = type === "localStorage" ? localStorage : sessionStorage;
   DOMAIN = domain || "";
 };
@@ -66,7 +98,7 @@ const set = (key: string, value: any, expirationTime?: string): void => {
       expiresAt: expirationTime && setExpiration(expirationTime)
     }
   };
-
+  emit(getFullKey(key), storeObject);
   store.setItem(getFullKey(key), JSON.stringify(storeObject));
 };
 
@@ -81,6 +113,7 @@ const get = (key: string): any => {
 };
 
 const remove = (key: string): void => {
+  emit(getFullKey(key), null);
   store.removeItem(getFullKey(key));
 };
 
@@ -95,10 +128,18 @@ const setDomain = (domain: string): void => {
 };
 
 const clearDomain = (domain: string = DOMAIN): void => {
-  for (const key of Object.keys(store)) if (key.includes(`${domain}_`)) store.removeItem(key);
+  for (const key of Object.keys(store)) if (key.includes(`${domain}_`)) {
+    emit(key,null);
+    store.removeItem(key);
+  }
 };
 
-const bust = (): void => store.clear();
+const bust = (): void => {
+  store.clear();
+  Object.keys(listeners).map((event) => {
+    emit(event, null);
+  });
+};
 
 export const localit = {
   /**
@@ -123,6 +164,12 @@ export const localit = {
    */
   get,
   /**
+   * Add a new listener on key changes
+   * @param key - the key to attach the callback
+   * @param callback - the function that will be called when the event Key will be emitted
+   */
+  on,
+  /**
    * Removes the given key from the Storage (and it's associated expiration date, if set). It uses the current domain.
    * @param key - key that will be removed from the Storage
    */
@@ -146,7 +193,7 @@ export const localit = {
   /**
    * Removes all the stored values in Storage
    */
-  bust,
+  bust
 };
 
 export type TLocalit = typeof localit;
