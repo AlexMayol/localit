@@ -1,8 +1,7 @@
-.cache/
 coverage/
 node_modules/
 *.log
-
+browser/index.js
 # OS generated files
 .DS_Store
 .DS_Store?

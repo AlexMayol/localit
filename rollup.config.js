@@ -20,6 +20,13 @@ export default [
         format: "umd",
         sourcemap: false,
       },
+      {
+        name: "localit",
+        dir: "browser",
+        exports: "named",
+        format: "umd",
+        sourcemap: false,
+      },
     ],
   }),
   bundle({

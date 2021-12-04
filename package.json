@@ -22,9 +22,13 @@
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
+    "browser": "concurrently  \"yarn dev\" \"http-server browser -o\"",
     "test": "yarn build && jest",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write .",
+    "pretty": "yarn prettier:fix && yarn lint:fix"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -35,9 +39,12 @@
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
     "babel-jest": "^26.6.3",
+    "concurrently": "^6.4.0",
     "esbuild": "^0.11.23",
     "eslint": "^8.1.0",
+    "http-server": "^14.0.0",
     "jest": "^26.6.3",
+    "prettier": "^2.5.1",
     "regenerator-runtime": "^0.13.7",
     "rollup": "^2.48.0",
     "rollup-plugin-dts": "^3.0.1",

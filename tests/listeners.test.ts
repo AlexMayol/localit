@@ -17,7 +17,7 @@ describe("Listener Events", () => {
     expect(mockCallback).toBeCalled();
     expect(mockCallback).toBeCalledWith(
       expect.objectContaining({
-        value
+        value,
       })
     );
   });
@@ -27,7 +27,7 @@ describe("Listener Events", () => {
     expect(mockCallback).toBeCalled();
     expect(mockCallback).toBeCalledWith(
       expect.objectContaining({
-        value: updateValue
+        value: updateValue,
       })
     );
   });
