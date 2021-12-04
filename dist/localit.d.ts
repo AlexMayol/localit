@@ -25,6 +25,12 @@ declare const localit: {
      */
     get: (key: string) => any;
     /**
+     * Add a new listener on key changes
+     * @param key - the key to attach the callback
+     * @param callback - the function that will be called when the event Key will be emitted
+     */
+    on: (event: string, callback: (value: any) => void) => void;
+    /**
      * Removes the given key from the Storage (and it's associated expiration date, if set). It uses the current domain.
      * @param key - key that will be removed from the Storage
      */

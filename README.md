@@ -110,6 +110,18 @@ store.setDomain("games");
 store.set("Mario", ["Mario Galaxy", "Mario Party"]);
 // games_Mario = ['Mario Galaxy', 'Mario Party']
 ```
+### on(key, callback)
+Set a event listener when the value of given key on the seted up domain is changed.
+
+```js
+const keyToListen = "dog";
+store.on(keyToListen, (metaData) => {
+    console.log (keyToListen, metadata);
+    /*
+    dog { value : "dog", .... }
+    */
+})
+```
 
 ### clearDomain(domain = '')
 
