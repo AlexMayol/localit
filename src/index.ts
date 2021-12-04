@@ -30,17 +30,27 @@ const setExpiration = (expirationTime: string): number => {
   const expirationDate = new Date();
 
   const timeFormats = {
-    h: (time: number) => expirationDate.setHours(expirationDate.getHours() + time),
-    d: (time: number) => expirationDate.setDate(expirationDate.getDate() + time),
-    m: (time: number) => expirationDate.setMinutes(expirationDate.getMinutes() + time),
-    s: (time: number) => expirationDate.setSeconds(expirationDate.getSeconds() + time),
+    h: (time: number) =>
+      expirationDate.setHours(expirationDate.getHours() + time),
+    d: (time: number) =>
+      expirationDate.setDate(expirationDate.getDate() + time),
+    m: (time: number) =>
+      expirationDate.setMinutes(expirationDate.getMinutes() + time),
+    s: (time: number) =>
+      expirationDate.setSeconds(expirationDate.getSeconds() + time),
   };
   // only minutes, days, hours and seconds allowed!
   const allowedFormats = Object.keys(timeFormats);
   const timeKey = expirationTime[expirationTime.length - 1];
   const time = Number(expirationTime.replace(timeKey, ""));
-  if (expirationTime.length < 2 || !allowedFormats.some((char) => timeKey === char) || isNaN(time)) {
-    console.warn("Localit: provide a valid expiratisson time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.");
+  if (
+    expirationTime.length < 2 ||
+    !allowedFormats.some((char) => timeKey === char) ||
+    isNaN(time)
+  ) {
+    console.warn(
+      "Localit: provide a valid expiratisson time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved."
+    );
     return;
   }
 
@@ -71,7 +81,10 @@ const emit = (event: string, ...data: any): void => {
   }
 };
 
-const config = ({ domain = null, type = "localStorage" }: LocalitConfig): void => {
+const config = ({
+  domain = null,
+  type = "localStorage",
+}: LocalitConfig): void => {
   store = type === "localStorage" ? localStorage : sessionStorage;
   DOMAIN = domain || "";
 };

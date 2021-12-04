@@ -55,7 +55,7 @@ describe("Saving and retrieving objects", () => {
     const consoleMock = jest.spyOn(console, "warn");
     store.set("three", 3, "10ddss");
     store.set("three bad", 3, "s");
-    
+
     expect(consoleMock.mock.calls.length).toBe(2);
     expect(localStorage.length).toBe(3);
   });

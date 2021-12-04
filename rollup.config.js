@@ -22,11 +22,11 @@ export default [
       },
       {
         name: "localit",
-        dir: 'browser',
+        dir: "browser",
         exports: "named",
         format: "umd",
         sourcemap: false,
-      }
+      },
     ],
   }),
   bundle({
