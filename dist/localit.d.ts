@@ -8,7 +8,7 @@ declare const localit: {
      * @param domain - name of the domain that will prefix all the stored keys. Example: given a "books" domain, the key "alone" will be stored as "books_alone".
      * @param type - the type of Storage you want to use: "localStorage" (default) or "sessionStorage"
      */
-    config: ({ domain, type }: LocalitConfig) => void;
+    config: ({ domain, type, }: LocalitConfig) => void;
     /**
    * Stores the given key/value in Storage. Additionally, an expiration date can be set.
    * @param key - key to store in Storage
@@ -27,7 +27,7 @@ declare const localit: {
     /**
      * Add a new listener on key changes
      * @param key - the key to attach the callback
-     * @param callback - the function that will be called when the event Key will be emitted
+     * @param callback - the function that will be called when the event key is emitted
      */
     on: (event: string, callback: (value: any) => void) => void;
     /**

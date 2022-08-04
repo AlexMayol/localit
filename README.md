@@ -1,5 +1,7 @@
 # localit
 
+Manage the Storage API in a more simpler and efficient way.
+
 A simple JS class to wrap localStorage and sessionStorage functionality. Supports expiration dates, so you can cache you data and retrieve it safely 🔥
 
 ## Install

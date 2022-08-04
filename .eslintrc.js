@@ -18,6 +18,7 @@ module.exports = {
     semi: ["error", "always"],
   },
   ignorePatterns: [
+    "browser/",
     "dist/",
     "rollup.config.js",
     ".eslintrc.js",

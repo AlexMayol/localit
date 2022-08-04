@@ -3,6 +3,7 @@ import esbuild from "rollup-plugin-esbuild";
 import { terser } from "rollup-plugin-terser";
 
 const name = require("./package.json").main.replace(/\.js$/, "");
+
 const bundle = (config) => ({
   ...config,
   input: "src/index.ts",
