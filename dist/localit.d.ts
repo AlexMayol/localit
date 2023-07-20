@@ -2,6 +2,7 @@ declare type LocalitConfig = {
     domain?: string;
     type?: "localStorage" | "sessionStorage";
 };
+declare type LocalitValue = any | any[];
 declare const localit: {
     /**
      * Sets the default configuration for storing data.
@@ -18,18 +19,18 @@ declare const localit: {
       It allows "Xs", "Xm", "Xh", "Xd", where X can be any number.
       Example: "5d" for five days or "3h" for three hours.
     */
-    set: (key: string, value: any, expirationTime?: string) => void;
+    set: (key: string, value: LocalitValue, expirationTime?: string | null) => void;
     /**
      * Retrieves the value associated with the given key from the Storage. It uses the current domain.
      * @param key - key that will be used to retrieve from Storage
      */
-    get: (key: string) => any;
+    get: (key: string) => LocalitValue;
     /**
      * Add a new listener on key changes
      * @param key - the key to attach the callback
      * @param callback - the function that will be called when the event key is emitted
      */
-    on: (event: string, callback: (value: any) => void) => void;
+    on: (event: string, callback: (value: LocalitValue) => void) => void;
     /**
      * Removes the given key from the Storage (and it's associated expiration date, if set). It uses the current domain.
      * @param key - key that will be removed from the Storage
@@ -40,12 +41,12 @@ declare const localit: {
      * @param key - Key to get the value of and then remove from Storage. It uses the current domain.
      *
      */
-    getAndRemove: (key: string) => any;
+    getAndRemove: (key: string) => LocalitValue;
     /**
      * Sets a new domain to prefix the next stored keys
      * @param domain - Name of the domain that will prefix all the keys until changed again
      */
-    setDomain: (domain: string) => void;
+    setDomain: (domain: string) => string;
     /**
      * Removes all the stored values for that domain. Defaults to the current domain.
      * @param domain - Name of the domain we want to remove
@@ -56,6 +57,6 @@ declare const localit: {
      */
     bust: () => void;
 };
-declare type TLocalit = typeof localit;
+declare type Localit = typeof localit;
 
-export { TLocalit, localit };
+export { Localit, localit };
