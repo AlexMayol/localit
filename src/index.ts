@@ -105,7 +105,7 @@ const set = (
       expiresAt: getExpirationTime(expirationTime),
     },
   };
-  emit(getFullKey(key), storeObject);
+  emit(getFullKey(key), storeObject.value);
   store.setItem(getFullKey(key), JSON.stringify(storeObject));
 };
 
