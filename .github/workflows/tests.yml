@@ -1,4 +1,4 @@
-name: localit unit tests
+name: Unit tests
 on: pull_request
 
 jobs:

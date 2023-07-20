@@ -110,16 +110,21 @@ const set = (
 };
 
 const get = (key: string): LocalitValue => {
-  const item: LocalitStore | null = JSON.parse(
-    store.getItem(getFullKey(key)) || "''"
-  );
+  try {
 
-  if (item?.meta?.expiresAt && hasExpired(item.meta.expiresAt)) {
-    remove(key);
+    const item: LocalitStore | null = JSON.parse(
+      store.getItem(getFullKey(key)) || "''"
+    );
+
+    if (item?.meta?.expiresAt && hasExpired(item.meta.expiresAt)) {
+      remove(key);
+      return null;
+    }
+
+    return item?.value || null;
+  } catch (_) {
     return null;
   }
-
-  return item?.value || null;
 };
 
 const remove = (key: string): void => {
