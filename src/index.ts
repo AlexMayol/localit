@@ -105,13 +105,12 @@ const set = (
       expiresAt: getExpirationTime(expirationTime),
     },
   };
-  emit(getFullKey(key), storeObject);
+  emit(getFullKey(key), storeObject.value);
   store.setItem(getFullKey(key), JSON.stringify(storeObject));
 };
 
 const get = (key: string): LocalitValue => {
   try {
-
     const item: LocalitStore | null = JSON.parse(
       store.getItem(getFullKey(key)) || "''"
     );

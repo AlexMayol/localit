@@ -1,183 +1,149 @@
 # localit
 
-Manage the Storage API in a more simpler and efficient way.
+Manage the Storage API in a simpler and more efficient way.
 
-A simple JS class to wrap localStorage and sessionStorage functionality. Supports expiration dates, so you can cache you data and retrieve it safely 🔥
+It allows you to store and retrieve key-value pairs, set expiration times for values, and listen for changes on specific keys. The library supports configuration options, event handling, and domain management.
 
 ## Install
 
-`npm i localit`
+You can install `localit` using your preferred package manager.
 
-## Example
+`npm i localit`
+`yarn add localit`
+`pnpm add localit`
+
+## Usage
+
+To use `localit` in your project, import the `localit` object from the library:
 
 ```js
 import { localit } from "localit";
-
-// You can pass `localStorage` or `sessionStorage` as parameter. Defaults to `localStorage`
-
-let data = [2, "red", { blue: "yellow" }];
-
-// This data will be deleted in exactly 5 days since it was saved
-localit.set("info", data, "5d");
-
-// Call this today
-// [2, 'red', {blue: 'yellow'}]
-
-// Call this in 5 days
-console.log(localit.get("info"));
-// null
-
-// Add a 'domain' to you store to automatically prefix the keys
-localit.config({ domain: "tests" });
-let data = { hello: "world" };
-localit.set("simple_object", data, "2h");
-
-// Now, you can retrieve the object with the get() method but it will be stores under the key 'tests_simple_object'
-console.log(localit.get("simple_object"));
-//{hello:'world'}
-
-console.log(localStorage);
-/*
-Storage:{
-    length: 2,
-    tests_simple_object: "{"hello":"world"}"
-    tests_simple_object_expiration_date: ""2020-11-30T11:35:31.041Z""
-}
-*/
 ```
 
-## API reference
+The localit object provides various methods for interacting with `Storage`:
 
-### config({domain = '', type = 'localStorage'})
+### Configuration
 
-```js
-import { localit as store } from "localit";
-```
+`config({ domain, type })`
+Sets the default configuration for storing data. The config method accepts a configuration object with the following optional properties:
 
-You can define a domain on this `config` method, so all the keys you save afterwards will have it appended.
-
-```js
-store.config({ domain: "pets" });
-store.set("dog", "Will");
-//pets_dog = 'Will'
-```
-
-You can also specify if you want to use `sessionStorage` instead of `localStorage`
+- `domain`: The name of the domain that will prefix all stored keys. If not provided, no domain prefix will be used.
+- `type`: The type of storage to use. It can be either `localStorage` or `sessionStorage`. The default value is `localStorage`.
 
 ```js
-store.config({ type: "sessionStorage" });
-```
-
-### set(key, val, expritationDate = null)
-
-Localit takes care of objects so you don't neet do parse them yourself with `JSON.stringify`, which I find extremely annoying.
-
-```js
-// Just store any kind of data without parsing it
-store.set("info", ["hello", "world"]);
-// As an optional third parameter, you can set an expiration date
-store.set("more_info", { avengers: "endgame" }, "5d");
-```
-
-The **expiration date** parameter accepts strings with a number and the type of time. For example, `5d` means that key will only be valid for 5 days, `30d` is 30 days and `132m` is 132 minutes.
-
-The letter must be lowercase and only seconds(`s`), minutes (`m`), hours (`h`) and days (`d`) are allowed.
-
-### get(key)
-
-You will recieve the data in the original format it was stored: string, number, array or object... Localit handles the requerid parsing under the hood so you don't need to call `JSON.parse(...)`.
-
-If you set an expiration date while saving the data, you'll get `null` if the current date is past the specified one.
-
-```js
-store.get("more_info");
-// {avengers: 'endgame'}
-```
-
-### remove(key)
-
-Removes the data and the expiration date key
-
-```js
-store.remove("info");
-// null
-```
-
-### setDomain(name)
-
-Change the domain of the store at any time, not only on instantiation time.
-
-```js
-store.setDomain("games");
-store.set("Mario", ["Mario Galaxy", "Mario Party"]);
-// games_Mario = ['Mario Galaxy', 'Mario Party']
-```
-
-### on(key, callback)
-
-Set a event listener when the value of given key on the seted up domain is changed.
-
-```js
-const keyToListen = "dog";
-store.on(keyToListen, (metaData) => {
-  console.log(keyToListen, metadata);
-  /*
-    dog { value : "dog", .... }
-    */
+localit.config({
+  domain: "mydomain",
+  type: "localStorage",
 });
 ```
 
-### clearDomain(domain = '')
+### Storing and Retrieving Values
 
-If you want to bulk remove all the data from a domain but keep the date from the rest, you can clear only the desired domain.
+`localit`'s main goal is to wrap the native `Storage` API available in the browser. It provides a simpler and more efficient way to store and retrieve values, without the need to use `JSON.stringify` and `JSON.parse`.
 
-```js
-store.setDomain("mammals_count");
-store.set("dog", "21");
-store.set("cat", "13");
+#### `set(key, value, expirationTime?)`
 
-store.setDomain("birds_count");
-store.set("eagle", "10");
-store.set("dove", "200");
+Stores the given key-value pair in the storage. Additionally, an **expiration time** can be set for the value.
 
-console.log(localStorage);
-/*
-length: 4
-birds_count_dove: "200"
-birds_count_eagle: "10"
-mammals_count_cat: "13"
-mammals_count_dog: "21"
-*/
-store.clearDomain("mammals_count");
-console.log(localStorage);
+- `key`: the key to store in the storage.
+- `value`: the value to store.
+- `expirationTime` _(optional)_: the duration for which the value will remain stored. It can be specified in seconds ("_Xs_"), minutes ("_Xm_"), hours ("_Xh_"), or days ("_Xd_"), where _X_ represents any number.
 
-/*
-length: 2
-birds_count_dove: "200"
-birds_count_eagle: "10"
-*/
-```
-
-### bust()
-
-Good ol' `clear()`. Will remove the entire data from the store, either localStorage or sessionStorage
+Example:
 
 ```js
-store.bust();
-
-console.log(localStorage);
-
-/*
-length: 0
-*/
+localit.set("myKey", "myValue", "1h");
+localit.set("otherKey", { oh: 8 }, "300s");
 ```
 
-## Why
+#### `get(key)`
 
-I made Localit because localStorage API feels too long and inefficient - `setItem` instead of `set` and having to transform to/from JSON in order to save and retrieve was a huge pain when you are constantly using it.
+Retrieves the value associated with the given key from the storage. It uses the current domain.
 
-I then thought it'd be cool to have some sort of expiration time for the data and it turned out pretty useful on some other projects.
+- `key`: the key used to retrieve the value.
 
-## Running locally
+If the value has expired due to the expiration date that was set, it will be removed from the storage and `null` will be returned.
 
-The workflow right now is pretty basic. The source code is on `src/localit.ts`. You can generate the transpiled version by running `npm run build`, using a simple Rollup config.
+Example:
+
+```js
+const value = localit.get("myKey"); // value = 'myValue'
+```
+
+### Removing values
+
+The other side of the coin is removing values from `Storage`. `localit` provides two methods for removing values: `remove` and `getAndRemove`.
+
+#### `remove(key)`
+
+Removes the given key and its associated value from `Storage`. It uses the current domain.
+
+- `key`: the key to remove from `Storage`.
+
+Example:
+
+```js
+localit.remove("myKey");
+```
+
+#### `getAndRemove(key)`
+
+Retrieves the value associated with the given key from `Storage` and then removes it. It uses the current domain.
+
+- `key`: the key to get the value of and then remove from `Storage`.
+
+Example:
+
+```js
+const value = localit.getAndRemove("myKey");
+```
+
+### Domain management
+
+Domains let you store data in different namespaces. This is useful when working in an app where multiple, independent teams contribute, avoiding having key duplicates - and, thus, overwriting data. The domain name is prepended to the key when storing values, but you don't need to specify it again when using the `get()` method.
+
+#### `setDomain(domainName)`
+
+- `domain`: the name of the domain that will prefix all the keys until changed again.
+
+Example:
+
+```js
+localit.setDomain("myNewDomain");
+```
+
+#### `clearDomain(domain?)`
+
+Removes all the stored values for the specified domain. If no domain is provided, it clears the values for the current domain.
+
+Example:
+
+`localit.clearDomain('myDomain')`
+
+#### `bust()`
+
+Removes all the stored values in `Storage`, regardless of the current domain.
+
+```js
+localit.bust();
+```
+
+### Event Handling
+
+A very interesting feature of `localit` is the ability to listen for changes on specific keys. This is useful when you want to update the UI when a value changes, for example. [Please, note that this is different from the `storage` event.](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event)
+
+`on(key, callback)`
+Adds a new listener to track changes on a specific key.
+
+- `key`: the key to attach the callback.
+- `callback`: the callback function to be called when the key is emitted by `localit`.
+
+Example:
+
+```js
+localit.on("myKey", (value) => {
+  console.log(`Value changed: ${value}`);
+});
+
+localit.set("myKey", "newValue"); // console.log: Value changed: 'newValue'
+```
