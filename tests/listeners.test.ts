@@ -5,8 +5,9 @@ describe("Listener Events", () => {
   const value = "d_ listener";
   const domain = "event_listener_test";
   store.config({ domain });
+
   const mockCallback = jest.fn();
-  store.on(`${domain}_${key}`, mockCallback);
+  store.on(key, mockCallback);
 
   beforeEach(() => {
     mockCallback.mockClear();

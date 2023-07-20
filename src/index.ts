@@ -20,7 +20,7 @@ const listeners = {};
  * @param key - the unprefixed key to retrieve
  * @returns the actual key stored in Storage
  */
-const getFullKey = (key: string): string => DOMAIN ? `${DOMAIN}_${key}` : key;
+const getFullKey = (key: string): string => (DOMAIN ? `${DOMAIN}_${key}` : key);
 
 /**
  * @param key - the key to store with an expiration time
@@ -91,8 +91,13 @@ const config = ({
   DOMAIN = domain;
 };
 
-const set = (key: string, value: LocalitValue, expirationTime: string | null = null): void => {
-  if (!key) return console.error("🔥 Localit: provide a key to store the value");
+const set = (
+  key: string,
+  value: LocalitValue,
+  expirationTime: string | null = null
+): void => {
+  if (!key)
+    return console.error("🔥 Localit: provide a key to store the value");
 
   const storeObject: LocalitStore = {
     value,
@@ -105,7 +110,9 @@ const set = (key: string, value: LocalitValue, expirationTime: string | null = n
 };
 
 const get = (key: string): LocalitValue => {
-  const item: LocalitStore | null = JSON.parse(store.getItem(getFullKey(key)) || "''");
+  const item: LocalitStore | null = JSON.parse(
+    store.getItem(getFullKey(key)) || "''"
+  );
 
   if (item?.meta?.expiresAt && hasExpired(item.meta.expiresAt)) {
     remove(key);
@@ -126,7 +133,7 @@ const getAndRemove = (key: string): LocalitValue => {
   return res;
 };
 
-const setDomain = (domain: string) => DOMAIN = domain;
+const setDomain = (domain: string) => (DOMAIN = domain);
 
 const clearDomain = (domain: string = DOMAIN) => {
   for (const key of Object.keys(store))
