@@ -5,35 +5,36 @@ Manage the Storage API in a simpler and more efficient way.
 It allows you to store and retrieve key-value pairs, set expiration times for values, and listen for changes on specific keys. The library supports configuration options, event handling, and domain management.
 
 ## Install
+
 You can install `localit` using your preferred package manager.
 
 `npm i localit`
 `yarn add localit`
 `pnpm add localit`
 
-
 ## Usage
+
 To use `localit` in your project, import the `localit` object from the library:
 
 ```js
-import { localit } from 'localit';
+import { localit } from "localit";
 ```
+
 The localit object provides various methods for interacting with `Storage`:
 
 ### Configuration
 
 `config({ domain, type })`
 Sets the default configuration for storing data. The config method accepts a configuration object with the following optional properties:
+
 - `domain`: The name of the domain that will prefix all stored keys. If not provided, no domain prefix will be used.
 - `type`: The type of storage to use. It can be either `localStorage` or `sessionStorage`. The default value is `localStorage`.
 
 ```js
-
 localit.config({
-  domain: 'mydomain',
-  type: 'localStorage',
+  domain: "mydomain",
+  type: "localStorage",
 });
-
 ```
 
 ### Storing and Retrieving Values
@@ -41,6 +42,7 @@ localit.config({
 `localit`'s main goal is to wrap the native `Storage` API available in the browser. It provides a simpler and more efficient way to store and retrieve values, without the need to use `JSON.stringify` and `JSON.parse`.
 
 #### `set(key, value, expirationTime?)`
+
 Stores the given key-value pair in the storage. Additionally, an **expiration time** can be set for the value.
 
 - `key`: the key to store in the storage.
@@ -50,13 +52,14 @@ Stores the given key-value pair in the storage. Additionally, an **expiration ti
 Example:
 
 ```js
-localit.set('myKey', 'myValue', '1h');
-localit.set('otherKey', { oh: 8 }, '300s');
+localit.set("myKey", "myValue", "1h");
+localit.set("otherKey", { oh: 8 }, "300s");
 ```
 
 #### `get(key)`
 
 Retrieves the value associated with the given key from the storage. It uses the current domain.
+
 - `key`: the key used to retrieve the value.
 
 If the value has expired due to the expiration date that was set, it will be removed from the storage and `null` will be returned.
@@ -64,15 +67,15 @@ If the value has expired due to the expiration date that was set, it will be rem
 Example:
 
 ```js
-const value = localit.get('myKey'); // value = 'myValue'
+const value = localit.get("myKey"); // value = 'myValue'
 ```
 
 ### Removing values
 
 The other side of the coin is removing values from `Storage`. `localit` provides two methods for removing values: `remove` and `getAndRemove`.
 
-
 #### `remove(key)`
+
 Removes the given key and its associated value from `Storage`. It uses the current domain.
 
 - `key`: the key to remove from `Storage`.
@@ -80,7 +83,7 @@ Removes the given key and its associated value from `Storage`. It uses the curre
 Example:
 
 ```js
-localit.remove('myKey');
+localit.remove("myKey");
 ```
 
 #### `getAndRemove(key)`
@@ -92,7 +95,7 @@ Retrieves the value associated with the given key from `Storage` and then remove
 Example:
 
 ```js
-const value = localit.getAndRemove('myKey');
+const value = localit.getAndRemove("myKey");
 ```
 
 ### Domain management
@@ -106,7 +109,7 @@ Domains let you store data in different namespaces. This is useful when working 
 Example:
 
 ```js
-localit.setDomain('myNewDomain');
+localit.setDomain("myNewDomain");
 ```
 
 #### `clearDomain(domain?)`
@@ -117,14 +120,12 @@ Example:
 
 `localit.clearDomain('myDomain')`
 
-
 #### `bust()`
 
 Removes all the stored values in `Storage`, regardless of the current domain.
 
 ```js
 localit.bust();
-
 ```
 
 ### Event Handling
@@ -133,15 +134,16 @@ A very interesting feature of `localit` is the ability to listen for changes on 
 
 `on(key, callback)`
 Adds a new listener to track changes on a specific key.
+
 - `key`: the key to attach the callback.
 - `callback`: the callback function to be called when the key is emitted by `localit`.
 
 Example:
 
 ```js
-localit.on('myKey', (value) => {
+localit.on("myKey", (value) => {
   console.log(`Value changed: ${value}`);
 });
 
-localit.set('myKey', 'newValue'); // console.log: Value changed: 'newValue'
+localit.set("myKey", "newValue"); // console.log: Value changed: 'newValue'
 ```

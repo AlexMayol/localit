@@ -111,7 +111,6 @@ const set = (
 
 const get = (key: string): LocalitValue => {
   try {
-
     const item: LocalitStore | null = JSON.parse(
       store.getItem(getFullKey(key)) || "''"
     );
