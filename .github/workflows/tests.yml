@@ -1,13 +1,23 @@
-name: localit unit tests
-on: [push, pull_request]
+name: Unit tests
+on: pull_request
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+        name: Checkout
+
+      - uses: actions/setup-node@v3
+        name: Setup node.js
         with:
-          node-version: "14"
+          node-version: "18"
+
       - run: yarn install
+        name: Install dependencies
+
       - run: yarn test
+        name: Run unit tests
+
+      - run: yarn build
+        name: Check build
