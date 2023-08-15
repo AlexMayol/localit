@@ -12,6 +12,8 @@ type LocalitStore = {
   };
 };
 
+export type ExpirationType = `${number}s` | `${number}m` | `${number}h` | `${number}d` | null;
+
 let DOMAIN = "";
 let store: Storage = localStorage;
 const listeners = {};
@@ -26,7 +28,7 @@ const getFullKey = (key: string): string => (DOMAIN ? `${DOMAIN}_${key}` : key);
  * @param key - the key to store with an expiration time
  * @param expirationTime - string with the amount of time we want to store the value. It allows "Xs", "Xm", "Xh", "Xd", where X can be any number.
  */
-const getExpirationTime = (expirationTime: string | null): number | null => {
+const getExpirationTime = (expirationTime: ExpirationType): number | null => {
   if (!expirationTime) return null;
   const expirationDate = new Date();
 
@@ -94,7 +96,7 @@ const config = ({
 const set = (
   key: string,
   value: LocalitValue,
-  expirationTime: string | null = null
+  expirationTime: ExpirationType = null
 ): void => {
   if (!key)
     return console.error("🔥 Localit: provide a key to store the value");
