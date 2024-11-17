@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-node@v3
         name: Setup node.js
         with:
-          node-version: "18"
+          node-version: "22"
 
       - run: yarn install
         name: Install dependencies
