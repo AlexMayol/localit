@@ -12,7 +12,12 @@ type LocalitStore = {
   };
 };
 
-export type ExpirationType = `${number}s` | `${number}m` | `${number}h` | `${number}d` | null;
+export type ExpirationType =
+  | `${number}s`
+  | `${number}m`
+  | `${number}h`
+  | `${number}d`
+  | null;
 
 let DOMAIN = "";
 let store: Storage = localStorage;

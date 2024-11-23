@@ -1,5 +1,4 @@
-import "regenerator-runtime/runtime";
-import { localit as store } from "../dist/localit.js";
+import { localit as store } from "../dist/index.min.esm";
 const justWait = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
