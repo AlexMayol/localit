@@ -12,7 +12,12 @@ type LocalitStore = {
   };
 };
 
-export type ExpirationType = `${number}s` | `${number}m` | `${number}h` | `${number}d` | null;
+export type ExpirationType =
+  | `${number}s`
+  | `${number}m`
+  | `${number}h`
+  | `${number}d`
+  | null;
 
 let DOMAIN = "";
 let store: Storage = localStorage;
@@ -111,7 +116,7 @@ const set = (
   store.setItem(getFullKey(key), JSON.stringify(storeObject));
 };
 
-const get = (key: string): LocalitValue => {
+const get = <T>(key: string): T | null => {
   try {
     const item: LocalitStore | null = JSON.parse(
       store.getItem(getFullKey(key)) || "''"

@@ -1,4 +1,4 @@
-import { localit as store } from "../dist/localit";
+import { localit as store } from "../dist/index.min.esm";
 
 describe("Saving and retrieving objects", () => {
   store.config({ domain: "object_tests" });

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "strict": false, // Ensure better type safety
+    "moduleResolution": "node",
+    "target": "es2020", // Match esbuild target
+    "lib": ["dom", "dom.iterable", "es2020"], // Browser-focused libraries
+    "esModuleInterop": true, // Easier compatibility with CommonJS
+    "skipLibCheck": false // Speeds up type checking
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

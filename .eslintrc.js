@@ -14,14 +14,10 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     indent: ["error", 2],
     "linebreak-style": "off",
-    quotes: ["error", "double"],
-    semi: ["error", "always"],
   },
   ignorePatterns: [
     "browser/",
     "dist/",
-    "rollup.config.js",
-    ".eslintrc.js",
     "browser/index.js",
   ],
 };
