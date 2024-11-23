@@ -116,7 +116,7 @@ const set = (
   store.setItem(getFullKey(key), JSON.stringify(storeObject));
 };
 
-const get = <T>(key: string): T | null => {
+const get = (key: string): LocalitValue => {
   try {
     const item: LocalitStore | null = JSON.parse(
       store.getItem(getFullKey(key)) || "''"

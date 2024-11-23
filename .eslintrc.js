@@ -15,9 +15,5 @@ module.exports = {
     indent: ["error", 2],
     "linebreak-style": "off",
   },
-  ignorePatterns: [
-    "browser/",
-    "dist/",
-    "browser/index.js",
-  ],
+  ignorePatterns: ["browser/", "dist/", "browser/index.js"],
 };
