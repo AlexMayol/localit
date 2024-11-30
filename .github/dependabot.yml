@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: "yarn"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "22:00"
+      timezone: "UTC"
