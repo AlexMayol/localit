@@ -3,10 +3,8 @@ type LocalitConfig = {
   type?: "localStorage" | "sessionStorage";
 };
 
-type LocalitValue = any | any[];
-
-type LocalitStore = {
-  value: LocalitValue;
+export type LocalitItem = {
+  value: any;
   meta: {
     expiresAt?: number | null;
   };
@@ -17,17 +15,16 @@ export type ExpirationType =
   | `${number}m`
   | `${number}h`
   | `${number}d`
-  | null;
 
 let DOMAIN = "";
 let store: Storage = localStorage;
-const listeners = {};
+const listeners: { [key: string]: Array<(value: any) => void> } = {};
 
 /**
  * @param key - the unprefixed key to retrieve
  * @returns the actual key stored in Storage
  */
-const getFullKey = (key: string): string => (DOMAIN ? `${DOMAIN}_${key}` : key);
+const getFullKey = (key: string) => (DOMAIN ? `${DOMAIN}_${key}` : key);
 
 /**
  * @param key - the key to store with an expiration time
@@ -62,16 +59,16 @@ const getExpirationTime = (expirationTime: ExpirationType): number | null => {
     return null;
   }
 
-  return timeFormats[timeKey](time);
+  return timeFormats[timeKey as keyof typeof timeFormats](time);
 };
 
 /**
  * @param key - the key to check if it has expired
  * @return whether or not there is an expiration date for the given key
  */
-const hasExpired = (time: number): boolean => new Date() > new Date(time);
+const hasExpired = (time: number) => new Date() > new Date(time);
 
-const on = (event: string, callback: (value: LocalitValue) => void): void => {
+const on = (event: string, callback: (value: any) => void) => {
   const key = getFullKey(event);
   if (!listeners[key]) {
     listeners[key] = [];
@@ -79,13 +76,12 @@ const on = (event: string, callback: (value: LocalitValue) => void): void => {
   listeners[key].push(callback);
 };
 
-const emit = (event: string, ...data: LocalitValue): void => {
+const emit = (event: string, ...data: [any]) => {
   if (!listeners[event]) {
     return;
   }
 
-  for (let i = 0; i < listeners[event].length; i++) {
-    const callback = listeners[event][i];
+  for (const callback of listeners[event]) {
     callback(...data);
   }
 };
@@ -93,44 +89,40 @@ const emit = (event: string, ...data: LocalitValue): void => {
 const config = ({
   domain = "",
   type = "localStorage",
-}: LocalitConfig): void => {
+}: LocalitConfig) => {
   store = type === "localStorage" ? localStorage : sessionStorage;
   DOMAIN = domain;
 };
 
 const set = (
   key: string,
-  value: LocalitValue,
-  expirationTime: ExpirationType = null
-): void => {
+  value: any,
+  expirationTime?: ExpirationType
+) => {
   if (!key)
     return console.error("🔥 Localit: provide a key to store the value");
 
-  const storeObject: LocalitStore = {
+  const storeObject: LocalitItem = {
     value,
     meta: {
-      expiresAt: getExpirationTime(expirationTime),
+      expiresAt: expirationTime ? getExpirationTime(expirationTime) : null,
     },
   };
   emit(getFullKey(key), storeObject.value);
   store.setItem(getFullKey(key), JSON.stringify(storeObject));
 };
 
-const get = (key: string): LocalitValue => {
-  try {
-    const item: LocalitStore | null = JSON.parse(
-      store.getItem(getFullKey(key)) || "''"
-    );
+const get = <T>(key: string): T | null => {
+  const item: LocalitItem | null = JSON.parse(
+    store.getItem(getFullKey(key)) ?? "null"
+  );
+  if (!item) return null;
 
-    if (item?.meta?.expiresAt && hasExpired(item.meta.expiresAt)) {
-      remove(key);
-      return null;
-    }
-
-    return item?.value || null;
-  } catch (_) {
+  if (item.meta?.expiresAt && hasExpired(item.meta.expiresAt)) {
+    remove(key);
     return null;
   }
+  return item.value;
 };
 
 const remove = (key: string): void => {
@@ -138,8 +130,8 @@ const remove = (key: string): void => {
   store.removeItem(getFullKey(key));
 };
 
-const getAndRemove = (key: string): LocalitValue => {
-  const res = get(key);
+const getAndRemove = <T>(key: string): T | null => {
+  const res = get<T>(key);
   remove(key);
   return res;
 };
@@ -156,7 +148,7 @@ const clearDomain = (domain: string = DOMAIN) => {
 
 const bust = () => {
   store.clear();
-  Object.keys(listeners).map((event) => {
+  Object.keys(listeners).forEach((event) => {
     emit(event, null);
   });
 };
