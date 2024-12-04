@@ -1,5 +1,5 @@
 import { localit as store } from "../dist/index.min.esm";
-const justWait = (ms) => {
+export const justWait = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
@@ -8,7 +8,6 @@ describe("Saving and retrieving objects", () => {
   const key = "timed_value";
   const value = "A temporary string";
   const expirationTime = "5s";
-
 
   beforeEach(() => {
     store.bust();
@@ -28,7 +27,7 @@ describe("Saving and retrieving objects", () => {
   });
 
   test("Expiration metadata is present in sessionStorage", () => {
-    store.config({ domain, type: 'sessionStorage' });
+    store.config({ domain, type: "sessionStorage" });
     store.set(key, value, expirationTime);
     const finalKey = `${domain}_${key}`;
     const item = JSON.parse(sessionStorage.getItem(finalKey) || "null");
@@ -41,13 +40,13 @@ describe("Saving and retrieving objects", () => {
   });
 
   test("Value is no longer retrievable after the expiration date", async () => {
-    store.set(key, value, '2s');
+    store.set(key, value, "2s");
     await justWait(4000);
     expect(store.get(key)).toEqual(null);
   });
 
   test("localStorage is not empty after the expiration date has passed", async () => {
-    store.set(key, value, '2s');
+    store.set(key, value, "2s");
     await justWait(4000);
     expect(localStorage.length).toBe(1);
   });

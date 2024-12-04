@@ -57,7 +57,7 @@ describe("Saving and retrieving objects", () => {
     store.set(complexObject.key, complexObject.value);
 
     expect(store.get(simpleObject.key)).not.toEqual(
-      store.get(complexObject.key)
+      store.get(complexObject.key),
     );
   });
 });

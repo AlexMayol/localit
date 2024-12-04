@@ -1,7 +1,6 @@
 import { localit as store } from "../dist/index.min.esm";
 
 describe("Saving and retrieving arrays", () => {
-
   const KEY = "basic";
   const VALUE = [1, "two", { three: 3 }, 4, false];
 

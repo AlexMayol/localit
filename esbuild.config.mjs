@@ -25,7 +25,7 @@ const outputs = [
   },
 ];
 Promise.all(
-  outputs.map((config) => esbuild.build({ ...sharedConfig, ...config }))
+  outputs.map((config) => esbuild.build({ ...sharedConfig, ...config })),
 ).catch((err) => {
   console.error("Build failed:", err);
   process.exit(1);
