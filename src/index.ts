@@ -14,7 +14,7 @@ export type ExpirationType =
   | `${number}s`
   | `${number}m`
   | `${number}h`
-  | `${number}d`
+  | `${number}d`;
 
 let DOMAIN = "";
 let store: Storage = localStorage;
@@ -54,7 +54,7 @@ const getExpirationTime = (expirationTime: ExpirationType): number | null => {
     isNaN(time)
   ) {
     console.warn(
-      "🔥 Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved."
+      "🔥 Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.",
     );
     return null;
   }
@@ -86,24 +86,30 @@ const emit = (event: string, ...data: [any]) => {
   }
 };
 
-const config = ({
-  domain = "",
-  type = "localStorage",
-}: LocalitConfig) => {
+const config = ({ domain = "", type = "localStorage" }: LocalitConfig) => {
   store = type === "localStorage" ? localStorage : sessionStorage;
   DOMAIN = domain;
 };
 
-const set = (
-  key: string,
-  value: any,
-  expirationTime?: ExpirationType
-) => {
+const set = (key: string, value: any, expirationTime?: ExpirationType) => {
   if (!key)
     return console.error("🔥 Localit: provide a key to store the value");
 
+  let serializedValue = value;
+  if (value instanceof Map) {
+    serializedValue = {
+      __type: "Map",
+      value: Array.from(value.entries()),
+    };
+  } else if (value instanceof Set) {
+    serializedValue = {
+      __type: "Set",
+      value: Array.from(value),
+    };
+  }
+
   const storeObject: LocalitItem = {
-    value,
+    value: serializedValue,
     meta: {
       expiresAt: expirationTime ? getExpirationTime(expirationTime) : null,
     },
@@ -114,7 +120,7 @@ const set = (
 
 const get = <T>(key: string): T | null => {
   const item: LocalitItem | null = JSON.parse(
-    store.getItem(getFullKey(key)) ?? "null"
+    store.getItem(getFullKey(key)) ?? "null",
   );
   if (!item) return null;
 
@@ -122,7 +128,13 @@ const get = <T>(key: string): T | null => {
     remove(key);
     return null;
   }
-  return item.value;
+  const value = item.value;
+  if (value && value.__type === "Map") {
+    return new Map(value.value) as T;
+  } else if (value && value.__type === "Set") {
+    return new Set(value.value) as T;
+  }
+  return value;
 };
 
 const remove = (key: string): void => {
