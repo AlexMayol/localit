@@ -1,8 +1,3 @@
-type LocalitConfig = {
-  domain?: string;
-  type?: "localStorage" | "sessionStorage";
-};
-
 export type LocalitItem = {
   value: any;
   meta: {
@@ -16,15 +11,25 @@ export type ExpirationType =
   | `${number}h`
   | `${number}d`;
 
-let DOMAIN = "";
-let store: Storage = localStorage;
-const listeners: { [key: string]: Array<(value: any) => void> } = {};
+export type LocalitSetConfig = {
+  type?: Storage;
+  family?: string;
+  expiresIn?: ExpirationType;
+};
 
-/**
- * @param key - the unprefixed key to retrieve
- * @returns the actual key stored in Storage
- */
-const getFullKey = (key: string) => (DOMAIN ? `${DOMAIN}_${key}` : key);
+export type LocalitGetConfig = {
+  type?: Storage;
+  family?: string;
+};
+
+const getConfig = (key: string, config?: LocalitGetConfig) => {
+  return {
+    storage: config?.type ?? localStorage,
+    fullKey: config?.family ? `${config.family}::${key}` : key,
+  };
+};
+
+const listeners: { [key: string]: Array<(value: any) => void> } = {};
 
 /**
  * @param key - the key to store with an expiration time
@@ -54,7 +59,7 @@ const getExpirationTime = (expirationTime: ExpirationType): number | null => {
     isNaN(time)
   ) {
     console.warn(
-      "🔥 Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved.",
+      "🔥 Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved."
     );
     return null;
   }
@@ -64,12 +69,12 @@ const getExpirationTime = (expirationTime: ExpirationType): number | null => {
 
 /**
  * @param key - the key to check if it has expired
- * @return whether or not there is an expiration date for the given key
+ * @return whether or not the timestamp is in the past
  */
 const hasExpired = (time: number) => new Date() > new Date(time);
 
 const on = (event: string, callback: (value: any) => void) => {
-  const key = getFullKey(event);
+  const key = event;
   if (!listeners[key]) {
     listeners[key] = [];
   }
@@ -86,12 +91,8 @@ const emit = (event: string, ...data: [any]) => {
   }
 };
 
-const config = ({ domain = "", type = "localStorage" }: LocalitConfig) => {
-  store = type === "localStorage" ? localStorage : sessionStorage;
-  DOMAIN = domain;
-};
-
-const set = (key: string, value: any, expirationTime?: ExpirationType) => {
+const set = (key: string, value: any, config?: LocalitSetConfig) => {
+  console.time("set item");
   if (!key)
     return console.error("🔥 Localit: provide a key to store the value");
 
@@ -111,21 +112,27 @@ const set = (key: string, value: any, expirationTime?: ExpirationType) => {
   const storeObject: LocalitItem = {
     value: serializedValue,
     meta: {
-      expiresAt: expirationTime ? getExpirationTime(expirationTime) : null,
+      expiresAt: config?.expiresIn ? getExpirationTime(config.expiresIn) : null,
     },
   };
-  emit(getFullKey(key), storeObject.value);
-  store.setItem(getFullKey(key), JSON.stringify(storeObject));
+
+  const { fullKey, storage } = getConfig(key, config);
+  emit(fullKey, storeObject.value);
+  storage.setItem(fullKey, JSON.stringify(storeObject));
+  console.timeEnd("set item");
 };
 
-const get = <T>(key: string): T | null => {
+const get = <T>(key: string, config?: LocalitGetConfig): T | null => {
+  console.time("get item");
+  const { fullKey, storage } = getConfig(key, config);
+
   const item: LocalitItem | null = JSON.parse(
-    store.getItem(getFullKey(key)) ?? "null",
+    storage.getItem(fullKey) ?? "null"
   );
   if (!item) return null;
 
   if (item.meta?.expiresAt && hasExpired(item.meta.expiresAt)) {
-    remove(key);
+    remove(key, config);
     return null;
   }
   const value = item.value;
@@ -134,31 +141,28 @@ const get = <T>(key: string): T | null => {
   } else if (value && value.__type === "Set") {
     return new Set(value.value) as T;
   }
+  console.timeEnd("get item");
   return value;
 };
 
-const remove = (key: string): void => {
-  emit(getFullKey(key), null);
-  store.removeItem(getFullKey(key));
+const remove = (key: string, config?: LocalitGetConfig): void => {
+  const { fullKey, storage } = getConfig(key, config);
+  emit(fullKey, null);
+  storage.removeItem(fullKey);
 };
 
-const getAndRemove = <T>(key: string): T | null => {
-  const res = get<T>(key);
-  remove(key);
-  return res;
-};
+const clearFamily = (family: string, storage?: Storage) => {
+  let store = storage ?? localStorage;
 
-const setDomain = (domain: string) => (DOMAIN = domain);
-
-const clearDomain = (domain: string = DOMAIN) => {
   for (const key of Object.keys(store))
-    if (key.includes(`${domain}`)) {
-      emit(key, null);
-      store.removeItem(key);
+    if (key.includes(`${family}::`)) {
+      remove(key, { type: store });
     }
 };
 
-const bust = () => {
+const bust = (storage?: Storage) => {
+  let store = storage ?? localStorage;
+
   store.clear();
   Object.keys(listeners).forEach((event) => {
     emit(event, null);
@@ -167,20 +171,17 @@ const bust = () => {
 
 export const localit = {
   /**
-   * Sets the default configuration for storing data.
-   * @param domain - name of the domain that will prefix all the stored keys. Example: given a "books" domain, the key "alone" will be stored as "books_alone".
-   * @param type - the type of Storage you want to use: "localStorage" (default) or "sessionStorage"
+   * Stores the given key/value in Storage. Additionally, an expiration date can be set.
+   * @param key - key to store in Storage
+   * @param value - value to store in Storage.
+   * @param config - configuration for storing the value.
+   * @param config.type - the type of Storage you want to use: "localStorage" (default) or "sessionStorage"
+   * @param config.family - the family of the key. Example: given a "books" family, the key "fiction" will be stored as "books::fiction".
+   * @param config.expiresIn - seconds, minutes, hours or days that the value will remain stored.
+   *    It will be deleted after that when trying to get the value.
+   *    It allows "Xs", "Xm", "Xh", "Xd", where X can be any number.
+   *    Example: "5d" for five days or "3h" for three hours.
    */
-  config,
-  /**
- * Stores the given key/value in Storage. Additionally, an expiration date can be set.
- * @param key - key to store in Storage
- * @param value - value to store in Storage. 
- * @param expirationTime - seconds, minutes, hours or days that the value will remain stored.
-    It will be deleted after that.
-    It allows "Xs", "Xm", "Xh", "Xd", where X can be any number.
-    Example: "5d" for five days or "3h" for three hours.
-  */
   set,
   /**
    * Retrieves the value associated with the given key from the Storage. It uses the current domain.
@@ -199,23 +200,14 @@ export const localit = {
    */
   remove,
   /**
-   * Retrieves the value associated with the given key from the Storage and then removes it. It uses the current domain.
-   * @param key - Key to get the value of and then remove from Storage. It uses the current domain.
-   *
+   * Removes all the stored values for that family.
+   * @param family - Name of the family we want to remove
+   * @param storage - the type of Storage you want to use: "localStorage" (default) or "sessionStorage"
    */
-  getAndRemove,
-  /**
-   * Sets a new domain to prefix the next stored keys
-   * @param domain - Name of the domain that will prefix all the keys until changed again
-   */
-  setDomain,
-  /**
-   * Removes all the stored values for that domain. Defaults to the current domain.
-   * @param domain - Name of the domain we want to remove
-   */
-  clearDomain,
+  clearFamily,
   /**
    * Removes all the stored values in Storage
+   * @param storage - the type of Storage you want to clear: "localStorage" (default) or "sessionStorage"
    */
   bust,
 };

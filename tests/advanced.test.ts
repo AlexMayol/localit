@@ -4,7 +4,6 @@ import { justWait } from "./expiration.test";
 describe("localit - Complex Map and Set handling", () => {
   beforeEach(() => {
     store.bust();
-    store.config({ domain: "", type: "localStorage" });
   });
 
   it("should correctly store and retrieve a complex Map", () => {

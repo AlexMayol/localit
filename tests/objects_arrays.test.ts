@@ -1,8 +1,11 @@
-import { localit as store } from "../dist/index.min.esm";
+import { localit } from "../dist/index.min.esm";
+import { Localit } from "../dist/index";
+
+const store = localit as Localit;
 
 describe("Saving and retrieving objects", () => {
-  store.config({ domain: "object_tests" });
   store.bust();
+  store.bust(sessionStorage);
 
   const simpleObject = {
     key: "simple_object",
@@ -39,18 +42,30 @@ describe("Saving and retrieving objects", () => {
     expect(localStorage.length).toBe(1);
   });
 
+  test("Object is stored in sessionStorage", () => {
+    store.set(simpleObject.key, simpleObject.value, {
+      type: sessionStorage,
+    });
+    expect(sessionStorage.length).toBe(1);
+  });
+
   test("Array is encoded properly", () => {
-    const { css } = store.get(simpleObject.key);
-    expect(css).toEqual(simpleObject.value.css);
+    const { value } = store.get(simpleObject.key) as {
+      value: typeof simpleObject.value;
+    };
+    expect(value.css).toEqual(simpleObject.value.css);
   });
 
   test("Object is encoded properly", () => {
-    const { html } = store.get(simpleObject.key);
-    expect(html.div).toBeTruthy();
-    expect(html.span).toBeFalsy();
+    const { value } = store.get(simpleObject.key) as {
+      value: typeof simpleObject.value;
+    };
+    expect(value.html.div).toBeTruthy();
+    expect(value.html.span).toBeFalsy();
   });
 
   store.bust();
+  store.bust(sessionStorage);
 
   test("Two different objects do not equal", () => {
     store.set(simpleObject.key, simpleObject.value);
