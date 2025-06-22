@@ -39,15 +39,18 @@ import { localit } from 'localit';
 Store a value in storage.
 
 ```ts
-localit.set('foo', { bar: 42 }, { expiresIn: '5m' });
+localit.set('foo', { bar: 42 }, { expiration: '5m' });
 localit.set('name', 'User123', { family: 'user' });
 localit.set('list', new Set([1, 2, 3]), { type: sessionStorage });
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+localit.set('lasts-a-day', { some: 'data' }, { expiration: tomorrow });
 ```
 
 Config options:
 - `type`: `localStorage` (default) or `sessionStorage`
 - `family`: string to namespace the key (stored as `family::key`)
-- `expiresIn`: `"Xs"`, `"Xm"`, `"Xh"`, or `"Xd"`
+- `expiration`: `"Xs"`, `"Xm"`, `"Xh"`, or `"Xd"`. Also accepts a `Date` object for a fixed expiration date.
 
 ---
 
@@ -119,7 +122,7 @@ Note: this is *not* the same as the native `storage` event—it only triggers wi
 ## 🧪 Example
 
 ```ts
-localit.set('cart', { count: 3 }, { expiresIn: '2h' });
+localit.set('cart', { count: 3 }, { expiration: '2h' });
 
 const cart = localit.get('cart'); // { count: 3 }
 
@@ -135,12 +138,12 @@ localit.set('cart', { count: 4 }); // logs: Cart updated: { count: 4 }
 ## 📚 Types
 
 ```ts
-type ExpirationType = \`\${number}s\` | \`\${number}m\` | \`\${number}h\` | \`\${number}d\`;
+type ExpirationType = `${number}s` | `${number}m` | `${number}h` | `${number}d` | Date;
 
 type LocalitSetConfig = {
   type?: Storage;
   family?: string;
-  expiresIn?: ExpirationType;
+  expiration?: ExpirationType;
 };
 
 type LocalitGetConfig = {

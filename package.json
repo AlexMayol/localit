@@ -31,7 +31,7 @@
   "scripts": {
     "reset": "rimraf dist",
     "build": "vite build",
-    "test": "yarn build && vitest test",
+    "test": "yarn build && vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",

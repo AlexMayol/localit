@@ -55,7 +55,7 @@ describe("localit - Complex Map and Set handling", () => {
     ]);
 
     store.set(testKey, complexMap, {
-      expiresIn: '1s'
+      expiration: '1s'
     });
 
     await justWait(2000); // Simulate 2 seconds
@@ -74,7 +74,7 @@ describe("localit - Complex Map and Set handling", () => {
     ]);
 
     store.set(testKey, complexSet, {
-      expiresIn: '1s'
+      expiration: '1s'
     });
 
     await justWait(2000); // Simulate 2 seconds

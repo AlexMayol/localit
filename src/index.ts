@@ -1,7 +1,7 @@
 export type LocalitItem = {
   value: any;
   meta: {
-    expiresAt?: number | null;
+    expiration?: number | null;
   };
 };
 
@@ -9,12 +9,13 @@ export type ExpirationType =
   | `${number}s`
   | `${number}m`
   | `${number}h`
-  | `${number}d`;
+  | `${number}d`
+  | Date;
 
 export type LocalitSetConfig = {
   type?: Storage;
   family?: string;
-  expiresIn?: ExpirationType;
+  expiration?: ExpirationType;
 };
 
 export type LocalitGetConfig = {
@@ -35,10 +36,30 @@ const listeners: { [key: string]: Array<(value: any) => void> } = {};
  * @param key - the key to store with an expiration time
  * @param expirationTime - string with the amount of time we want to store the value. It allows "Xs", "Xm", "Xh", "Xd", where X can be any number.
  */
-const getExpirationTime = (expirationTime: ExpirationType): number | null => {
+const getExpirationTime = (expirationTime?: ExpirationType): number | null => {
   if (!expirationTime) return null;
+
+  // First, check if input value is a valid Date
+  if (expirationTime instanceof Date) {
+    if (isNaN(expirationTime.getTime())) {
+      console.warn(
+        "🔥 Localit: provided Date is invalid. Your expiration date hasn't been saved."
+      );
+      return null;
+    }
+    return expirationTime.getTime();
+  }
+
+  if (typeof expirationTime !== 'string') {
+    console.warn(
+      "🔥 Localit: invalid expiration time type. Please provide a string (e.g. '20h') or a Date object."
+    );
+    return null;
+  }
+  
   const expirationDate = new Date();
 
+  // Or check if input is a valid string with the desired format
   const timeFormats = {
     h: (time: number) =>
       expirationDate.setHours(expirationDate.getHours() + time),
@@ -92,7 +113,6 @@ const emit = (event: string, ...data: [any]) => {
 };
 
 const set = (key: string, value: any, config?: LocalitSetConfig) => {
-  console.time("set item");
   if (!key)
     return console.error("🔥 Localit: provide a key to store the value");
 
@@ -112,18 +132,16 @@ const set = (key: string, value: any, config?: LocalitSetConfig) => {
   const storeObject: LocalitItem = {
     value: serializedValue,
     meta: {
-      expiresAt: config?.expiresIn ? getExpirationTime(config.expiresIn) : null,
+      expiration: getExpirationTime(config?.expiration)
     },
   };
 
   const { fullKey, storage } = getConfig(key, config);
   emit(fullKey, storeObject.value);
   storage.setItem(fullKey, JSON.stringify(storeObject));
-  console.timeEnd("set item");
 };
 
 const get = <T>(key: string, config?: LocalitGetConfig): T | null => {
-  console.time("get item");
   const { fullKey, storage } = getConfig(key, config);
 
   const item: LocalitItem | null = JSON.parse(
@@ -131,7 +149,7 @@ const get = <T>(key: string, config?: LocalitGetConfig): T | null => {
   );
   if (!item) return null;
 
-  if (item.meta?.expiresAt && hasExpired(item.meta.expiresAt)) {
+  if (item.meta?.expiration && hasExpired(item.meta.expiration)) {
     remove(key, config);
     return null;
   }
@@ -141,7 +159,6 @@ const get = <T>(key: string, config?: LocalitGetConfig): T | null => {
   } else if (value && value.__type === "Set") {
     return new Set(value.value) as T;
   }
-  console.timeEnd("get item");
   return value;
 };
 
@@ -177,7 +194,7 @@ export const localit = {
    * @param config - configuration for storing the value.
    * @param config.type - the type of Storage you want to use: "localStorage" (default) or "sessionStorage"
    * @param config.family - the family of the key. Example: given a "books" family, the key "fiction" will be stored as "books::fiction".
-   * @param config.expiresIn - seconds, minutes, hours or days that the value will remain stored.
+   * @param config.expiration - seconds, minutes, hours or days that the value will remain stored. Also accepts a fixed Date.
    *    It will be deleted after that when trying to get the value.
    *    It allows "Xs", "Xm", "Xh", "Xd", where X can be any number.
    *    Example: "5d" for five days or "3h" for three hours.
