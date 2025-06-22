@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import fs from "fs";
 import util from "util";
 import zlib from "zlib";
@@ -10,7 +11,7 @@ const getGzipSize = (filePath) =>
     .then((x) => x.length);
 
 const MAX_ALLOWED_SIZE = 1500;
-const LOCALIT_PATH = "./dist/index.min.esm.js";
+const LOCALIT_PATH = "./dist/localit.es.js";
 
 describe("Localit's final file size", () => {
   test("The generated file doesn't exceed 1.5KB after being gzipped", async () => {

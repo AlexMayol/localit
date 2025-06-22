@@ -1,4 +1,5 @@
-import { localit as store } from "../dist/index.min.esm";
+import { describe, test, expect, beforeEach } from 'vitest';
+import { localit as store } from "../dist/localit.es.js";
 import { justWait } from "./expiration.test";
 
 describe("localit - Complex Map and Set handling", () => {
@@ -6,9 +7,9 @@ describe("localit - Complex Map and Set handling", () => {
     store.bust();
   });
 
-  it("should correctly store and retrieve a complex Map", () => {
+  test("should correctly store and retrieve a complex Map", () => {
     const testKey = "complexMap";
-    const complexMap = new Map([
+    const complexMap = new Map<string, any>([
       ["key1", { name: "Alice", age: 30 }],
       ["key2", [1, 2, 3, 4]],
       ["key3", "simpleValue"],
@@ -25,7 +26,7 @@ describe("localit - Complex Map and Set handling", () => {
     expect(retrievedMap.get("key3")).toBe(complexMap.get("key3"));
   });
 
-  it("should correctly store and retrieve a complex Set", () => {
+  test("should correctly store and retrieve a complex Set", () => {
     const testKey = "complexSet";
     const complexSet = new Set([
       { id: 1, value: "object1" },
@@ -46,14 +47,16 @@ describe("localit - Complex Map and Set handling", () => {
     expect(items).toContain("simpleValue");
   });
 
-  it("should handle expiration for a complex Map", async () => {
+  test("should handle expiration for a complex Map", async () => {
     const testKey = "complexMapExpires";
     const complexMap = new Map([
       ["key1", { name: "Bob", age: 25 }],
       ["key2", [5, 6, 7, 8]],
     ]);
 
-    store.set(testKey, complexMap, "1s");
+    store.set(testKey, complexMap, {
+      expiresIn: '1s'
+    });
 
     await justWait(2000); // Simulate 2 seconds
 
@@ -62,7 +65,7 @@ describe("localit - Complex Map and Set handling", () => {
     expect(retrievedMap).toBeNull();
   });
 
-  it("should handle expiration for a complex Set", async () => {
+  test("should handle expiration for a complex Set", async () => {
     const testKey = "complexSetExpires";
     const complexSet = new Set([
       { id: 2, value: "object2" },
@@ -70,7 +73,9 @@ describe("localit - Complex Map and Set handling", () => {
       "anotherSimpleValue",
     ]);
 
-    store.set(testKey, complexSet, "1s");
+    store.set(testKey, complexSet, {
+      expiresIn: '1s'
+    });
 
     await justWait(2000); // Simulate 2 seconds
 

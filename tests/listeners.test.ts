@@ -1,12 +1,13 @@
-import { localit } from "../dist/index.min.esm";
-import type { Localit } from "../dist/index";
+import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { localit } from "../dist/localit.es.js";
+import type { Localit } from "../dist/index.d.ts";
 
 const store = localit as Localit;
 describe("Listener Events", () => {
   const KEY = "listener";
   const VALUE = "d_ listener";
 
-  const mockCallback = jest.fn();
+  const mockCallback = vi.fn();
   store.on(KEY, mockCallback);
 
   beforeEach(() => {

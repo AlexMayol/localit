@@ -1,5 +1,6 @@
-import { localit } from "../dist/index.min.esm";
-import { Localit } from "../dist/index";
+import { describe, test, expect, beforeEach } from "vitest";
+import { localit } from "../dist/localit.es.js";
+import type { Localit } from "../dist/index.d.ts";
 
 const store = localit as Localit;
 
@@ -50,18 +51,14 @@ describe("Saving and retrieving objects", () => {
   });
 
   test("Array is encoded properly", () => {
-    const { value } = store.get(simpleObject.key) as {
-      value: typeof simpleObject.value;
-    };
-    expect(value.css).toEqual(simpleObject.value.css);
+    const { css } = store.get(simpleObject.key) as typeof simpleObject.value;
+    expect(css).toEqual(simpleObject.value.css);
   });
 
   test("Object is encoded properly", () => {
-    const { value } = store.get(simpleObject.key) as {
-      value: typeof simpleObject.value;
-    };
-    expect(value.html.div).toBeTruthy();
-    expect(value.html.span).toBeFalsy();
+    const { html } = store.get(simpleObject.key) as typeof simpleObject.value;
+    expect(html.div).toBeTruthy();
+    expect(html.span).toBeFalsy();
   });
 
   store.bust();
@@ -72,7 +69,7 @@ describe("Saving and retrieving objects", () => {
     store.set(complexObject.key, complexObject.value);
 
     expect(store.get(simpleObject.key)).not.toEqual(
-      store.get(complexObject.key),
+      store.get(complexObject.key)
     );
   });
 });

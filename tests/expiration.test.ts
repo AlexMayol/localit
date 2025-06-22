@@ -1,4 +1,5 @@
-import { localit } from "../src/index";
+import { describe, test, expect, beforeEach, vi } from "vitest";
+import { localit } from "../dist/localit.es.js";
 
 const store = localit;
 
@@ -17,14 +18,14 @@ describe("Saving and retrieving objects", () => {
 
   test("Value is stored with an expiration date", () => {
     store.set(key, value, {
-      expiresIn: expirationTime
+      expiresIn: expirationTime,
     });
     expect(localStorage.length).toBe(1);
   });
 
   test("Expiration metadata is present in localStorage", () => {
     store.set(key, value, {
-      expiresIn: expirationTime
+      expiresIn: expirationTime,
     });
     const item = JSON.parse(localStorage.getItem(key) || "null");
     expect(item?.meta.expiresAt).toBeDefined();
@@ -33,7 +34,7 @@ describe("Saving and retrieving objects", () => {
   test("Expiration metadata is present in sessionStorage", () => {
     store.set(key, value, {
       expiresIn: expirationTime,
-      type: sessionStorage
+      type: sessionStorage,
     });
     const item = JSON.parse(sessionStorage.getItem(key) || "null");
     expect(item?.meta.expiresAt).toBeDefined();
@@ -41,14 +42,14 @@ describe("Saving and retrieving objects", () => {
 
   test("Value is retrievable within its life span", () => {
     store.set(key, value, {
-      expiresIn: expirationTime
+      expiresIn: expirationTime,
     });
     expect(store.get(key)).toEqual(value);
   });
 
   test("Value is no longer retrievable after the expiration date", async () => {
     store.set(key, value, {
-      expiresIn: "2s"
+      expiresIn: "2s",
     });
     await justWait(4000);
     expect(store.get(key)).toEqual(null);
@@ -56,7 +57,7 @@ describe("Saving and retrieving objects", () => {
 
   test("localStorage is not empty after the expiration date has passed", async () => {
     store.set(key, value, {
-      expiresIn: "2s"
+      expiresIn: "2s",
     });
     await justWait(4000);
     expect(localStorage.length).toBe(1);
@@ -64,20 +65,20 @@ describe("Saving and retrieving objects", () => {
 
   test("Storing multiple values with expiration date", () => {
     store.set("one", 1, {
-      expiresIn: "3s"
+      expiresIn: "3s",
     });
     store.set("two", 2, {
-      expiresIn: "6s"
+      expiresIn: "6s",
     });
     expect(localStorage.length).toBe(2);
   });
 
   test("After 4 seconds, only one value can be retrieved but two exists", async () => {
     store.set("one", 1, {
-      expiresIn: "3s"
+      expiresIn: "3s",
     });
     store.set("two", 2, {
-      expiresIn: "6s"
+      expiresIn: "6s",
     });
     await justWait(4000);
     expect(localStorage.length).toBe(2);
@@ -86,14 +87,12 @@ describe("Saving and retrieving objects", () => {
   });
 
   test("Storing bad time format", () => {
-    const consoleMock = jest.spyOn(console, "warn");
+    const consoleMock = vi.spyOn(console, "warn");
     store.set("three", 3, {
-      // @ts-expect-error incorrect type on purpose
-      expiresIn: "10ddss"
+      expiresIn: "10ddss",
     });
     store.set("three bad", 3, {
-      // @ts-expect-error incorrect type on purpose
-      expiresIn: "s"
+      expiresIn: "s",
     });
 
     expect(consoleMock.mock.calls.length).toBe(2);

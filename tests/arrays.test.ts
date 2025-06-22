@@ -1,5 +1,6 @@
-import { localit } from "../dist/index.min.esm";
-import type { Localit } from "../dist/index";
+import { describe, test, expect, beforeEach } from 'vitest';
+import { localit } from "../dist/localit.es.js";
+import type { Localit } from "../dist/index.d.ts";
 
 const store = localit as Localit;
 

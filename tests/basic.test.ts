@@ -1,5 +1,6 @@
-import { localit } from "../dist/index.min.esm";
-import type { Localit } from "../dist/index";
+import { describe, test, expect, beforeEach } from "vitest";
+import { localit } from "../dist/localit.es.js";
+import type { Localit } from "../dist/index.d.ts"; // not strictly necessary
 
 const store = localit as Localit;
 
@@ -7,10 +8,13 @@ describe("Simple tests", () => {
   const KEY = "basic";
   const VALUE = "Hello World";
 
-  test("localStorage is empty", () => {
+  beforeEach(() => {
     store.bust();
-    expect(localStorage.length).toBe(0);
     store.bust(sessionStorage);
+  });
+
+  test("localStorage is empty", () => {
+    expect(localStorage.length).toBe(0);
     expect(sessionStorage.length).toBe(0);
   });
 
@@ -20,21 +24,21 @@ describe("Simple tests", () => {
   });
 
   test("get() is called properly", () => {
+    store.set(KEY, VALUE);
     expect(store.get(KEY)).toBe(VALUE);
   });
 
   test("localStorage key is correct", () => {
-    const included = Object.keys(localStorage).includes("basic");
+    store.set(KEY, VALUE);
+    const included = Object.keys(localStorage).includes(KEY);
     expect(included).toBeTruthy();
   });
 
   test("clearFamily works as expected", () => {
-    store.bust();
-
-    store.set("test1", 1, {family: 'family_1'});
-    store.set("test2", 2, {family: 'family_1'});
-    store.set("test1", 1, {family: 'family_2'});
-    store.set("test2", 2, {family: 'family_2'});
+    store.set("test1", 1, { family: "family_1" });
+    store.set("test2", 2, { family: "family_1" });
+    store.set("test1", 1, { family: "family_2" });
+    store.set("test2", 2, { family: "family_2" });
 
     expect(localStorage.length).toBe(4);
     store.clearFamily("family_1");
@@ -44,7 +48,6 @@ describe("Simple tests", () => {
   });
 
   test("localStorage is empty after clearing it", () => {
-    store.bust();
     expect(localStorage.length).toBe(0);
   });
 });
