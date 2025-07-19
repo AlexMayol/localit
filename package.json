@@ -32,12 +32,12 @@
   ],
   "scripts": {
     "build": "vite build",
-    "test": "yarn build && vitest run",
+    "test": "npm run build && vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "pretty": "yarn prettier:fix && yarn lint:fix"
+    "pretty": "npm run prettier:fix && npm run lint:fix"
   },
   "devDependencies": {
     "@eslint/js": "^9.5.0",
