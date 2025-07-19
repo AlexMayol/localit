@@ -1,13 +1,13 @@
-import { localit as store } from "../dist/index.min.esm";
+import { describe, test, expect, beforeEach, vi } from "vitest";
+import { localit } from "../dist/localit.es.js";
+import type { Localit } from "../dist/index.d.ts";
 
+const store = localit as Localit;
 describe("Listener Events", () => {
   const KEY = "listener";
   const VALUE = "d_ listener";
-  const DOMAIN = "event_listener_test";
 
-  store.config({ domain: DOMAIN });
-
-  const mockCallback = jest.fn();
+  const mockCallback = vi.fn();
   store.on(KEY, mockCallback);
 
   beforeEach(() => {
@@ -33,21 +33,9 @@ describe("Listener Events", () => {
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(mockCallback).toHaveBeenCalledWith(null);
   });
-  test("Callback is executed on getAndRemove", () => {
-    store.set(KEY, VALUE);
-    store.getAndRemove(KEY);
-    expect(mockCallback).toHaveBeenCalledTimes(2);
-    expect(mockCallback).toHaveBeenCalledWith(null);
-  });
   test("Callback is executed on bust", () => {
     store.set(KEY, VALUE);
     store.bust();
-    expect(mockCallback).toHaveBeenCalledTimes(2);
-    expect(mockCallback).toHaveBeenCalledWith(null);
-  });
-  test("Callback is executed on clearDomain", () => {
-    store.set(KEY, VALUE);
-    store.clearDomain();
     expect(mockCallback).toHaveBeenCalledTimes(2);
     expect(mockCallback).toHaveBeenCalledWith(null);
   });

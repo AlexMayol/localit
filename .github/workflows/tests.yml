@@ -5,19 +5,23 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         name: Setup node.js
         with:
           node-version: 22
 
-      - run: yarn install
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - run: pnpm i
         name: Install dependencies
 
-      - run: yarn test
+      - run: pnpm test
         name: Run unit tests
 
-      - run: yarn build
+      - run: pnpm build
         name: Check build

@@ -1,51 +1,56 @@
 {
   "name": "localit",
-  "version": "5.1.1",
+  "version": "6.0.0",
   "license": "MIT",
-  "description": "Simple wrapper class for localStorage and sessionStorage",
+  "description": "Manage your Storage with ease, adding expiration dates through a simple API",
   "repository": "alexmayol/localit",
-  "main": "dist/localit.js",
-  "module": "dist/index.min.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/localit.cjs.js",
+  "module": "./dist/localit.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/localit.es.js",
+      "require": "./dist/localit.cjs.js"
+    }
+  },
+  "type": "module",
   "sideEffects": false,
   "files": [
     "dist"
   ],
   "author": "Alejandro Mayol",
   "keywords": [
-    "HTML5",
+    "JavaScript",
+    "library",
     "localStorage",
     "sessionStorage",
     "cache",
     "store",
-    "ES6 class",
+    "Vite",
     "TypeScript"
   ],
   "scripts": {
-    "reset": "rimraf dist",
-    "build:bundle": "node esbuild.config.mjs",
-    "build:types": "tsc --emitDeclarationOnly",
-    "build": "yarn reset && yarn build:bundle && yarn build:types",
-    "test": "yarn build && jest",
+    "build": "vite build",
+    "test": "pnpm build && vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "pretty": "yarn prettier:fix && yarn lint:fix"
+    "pretty": "pnpm prettier:fix && pnpm lint:fix"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/preset-env": "^7.12.7",
-    "@types/jest": "^29.5.14",
-    "@typescript-eslint/eslint-plugin": "^8.15.0",
-    "@typescript-eslint/parser": "^8.15.0",
-    "babel-jest": "^29.7.0",
-    "esbuild": "^0.25.0",
+    "@eslint/js": "^9.5.0",
+    "@types/node": "^24.0.3",
     "eslint": "^9.15.0",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "globals": "^15.6.0",
+    "jsdom": "^26.1.0",
     "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.7.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.15.0",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.2.4"
   }
 }

@@ -1,4 +1,8 @@
-import { localit as store } from "../dist/index.min.esm";
+import { describe, test, expect, beforeEach } from "vitest";
+import { localit } from "../dist/localit.es.js";
+import type { Localit } from "../dist/index.d.ts";
+
+const store = localit as Localit;
 
 describe("Saving and retrieving arrays", () => {
   const KEY = "basic";
@@ -6,24 +10,26 @@ describe("Saving and retrieving arrays", () => {
 
   beforeEach(() => {
     store.bust();
-    store.config({ domain: "array_tests" });
-    store.set(KEY, VALUE);
+    store.set(KEY, VALUE, { family: "array_tests" });
   });
 
   test("Array is stored", () => {
     expect(localStorage.length).toBe(1);
   });
 
-  test("Array is retieved properly", () => {
+  test("Array is not retieved if family is not provided", () => {
     const array = store.get(KEY);
-    expect(array.length).toEqual(5);
-    expect(array[2]).toEqual(VALUE[2]);
+    expect(array).toBe(null);
+  });
+  test("Array is retieved properly", () => {
+    const array = store.get(KEY, { family: "array_tests" });
+    expect(array).toEqual(VALUE);
   });
 
   test("array is not modified in memory", () => {
-    const array = store.get(KEY);
-    array.push(5);
-    expect(array.length).toEqual(6);
-    expect(store.get(KEY).length).toEqual(5);
+    const array = store.get(KEY, { family: "array_tests" });
+    (array as any).push(5);
+    expect(array).not.toEqual(VALUE);
+    expect(store.get(KEY, { family: "array_tests" })).toEqual(VALUE);
   });
 });
