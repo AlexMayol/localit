@@ -1,4 +1,8 @@
 # localit
+![minzip size](https://badgen.net/bundlephobia/minzip/localit)
+![dependency count](https://badgen.net/bundlephobia/dependency-count/localit)
+![tree-shakeable](https://badgen.net/bundlephobia/tree-shaking/localit)
+
 
 🔥 A lightweight, fully-typed wrapper around the Web Storage API (`localStorage` / `sessionStorage`) with expiration support, optional key namespacing, and change event listeners.
 
