@@ -112,8 +112,7 @@ const emit = (event: string, ...data: [any]) => {
 };
 
 const set = (key: string, value: any, config?: LocalitSetConfig) => {
-  if (!key)
-    return console.error("Localit: provide a key to store the value");
+  if (!key) return console.error("Localit: provide a key to store the value");
 
   let serializedValue = value;
   if (value instanceof Map) {
