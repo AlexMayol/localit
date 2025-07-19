@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { describe, test, expect, beforeEach, vi } from "vitest";
 import { localit } from "../dist/localit.es.js";
 import type { Localit } from "../dist/index.d.ts";
 

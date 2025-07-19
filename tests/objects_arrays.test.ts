@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from "vitest";
+import { describe, test, expect } from "vitest";
 import { localit } from "../dist/localit.es.js";
 import type { Localit } from "../dist/index.d.ts";
 
@@ -69,7 +69,7 @@ describe("Saving and retrieving objects", () => {
     store.set(complexObject.key, complexObject.value);
 
     expect(store.get(simpleObject.key)).not.toEqual(
-      store.get(complexObject.key)
+      store.get(complexObject.key),
     );
   });
 });

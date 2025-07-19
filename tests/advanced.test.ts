@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach } from "vitest";
 import { localit as store } from "../dist/localit.es.js";
 import { justWait } from "./expiration.test";
 
@@ -55,7 +55,7 @@ describe("localit - Complex Map and Set handling", () => {
     ]);
 
     store.set(testKey, complexMap, {
-      expiration: '1s'
+      expiration: "1s",
     });
 
     await justWait(2000); // Simulate 2 seconds
@@ -74,7 +74,7 @@ describe("localit - Complex Map and Set handling", () => {
     ]);
 
     store.set(testKey, complexSet, {
-      expiration: '1s'
+      expiration: "1s",
     });
 
     await justWait(2000); // Simulate 2 seconds

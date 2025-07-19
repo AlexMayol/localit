@@ -29,7 +29,7 @@ pnpm add localit
 ### Import
 
 ```ts
-import { localit } from 'localit';
+import { localit } from "localit";
 ```
 
 ---
@@ -39,15 +39,16 @@ import { localit } from 'localit';
 Store a value in storage.
 
 ```ts
-localit.set('foo', { bar: 42 }, { expiration: '5m' });
-localit.set('name', 'User123', { family: 'user' });
-localit.set('list', new Set([1, 2, 3]), { type: sessionStorage });
+localit.set("foo", { bar: 42 }, { expiration: "5m" });
+localit.set("name", "User123", { family: "user" });
+localit.set("list", new Set([1, 2, 3]), { type: sessionStorage });
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
-localit.set('lasts-a-day', { some: 'data' }, { expiration: tomorrow });
+localit.set("lasts-a-day", { some: "data" }, { expiration: tomorrow });
 ```
 
 Config options:
+
 - `type`: `localStorage` (default) or `sessionStorage`
 - `family`: string to namespace the key (stored as `family::key`)
 - `expiration`: `"Xs"`, `"Xm"`, `"Xh"`, or `"Xd"`. Also accepts a `Date` object for a fixed expiration date.
@@ -59,8 +60,8 @@ Config options:
 Retrieve a value.
 
 ```ts
-const value = localit.get('foo');
-const set = localit.get<Set<number>>('list');
+const value = localit.get("foo");
+const set = localit.get<Set<number>>("list");
 ```
 
 If the value has expired, it will be removed and `null` is returned.
@@ -72,15 +73,18 @@ If the value has expired, it will be removed and `null` is returned.
 Delete a specific key.
 
 ```ts
-localit.remove('foo');
+localit.remove("foo");
 ```
+
 Also, specify a family for even more control
+
 ```ts
 localit.set('foo', 'bar') // Will be stored with 'foo' as key
 localit.set('foo', 'baz' { family: 'bar' }) // Will be stores with 'bar::foo key
 
 localit.remove('foo') // Will detele 'foo' but not 'bar::foo'
 ```
+
 ---
 
 ### `clearFamily(family, storage?)`
@@ -88,8 +92,8 @@ localit.remove('foo') // Will detele 'foo' but not 'bar::foo'
 Remove all keys that belong to a given family.
 
 ```ts
-localit.clearFamily('user');
-localit.clearFamily('cache', sessionStorage); // Only delete `cache` family in sessionStorage, localStorage keys are kept intact
+localit.clearFamily("user");
+localit.clearFamily("cache", sessionStorage); // Only delete `cache` family in sessionStorage, localStorage keys are kept intact
 ```
 
 ---
@@ -110,27 +114,27 @@ localit.bust(sessionStorage); // clears sessionStorage
 Subscribe to key changes (e.g. via `set()` or `remove()`).
 
 ```ts
-localit.on('foo', (newValue) => {
-  console.log('foo changed:', newValue);
+localit.on("foo", (newValue) => {
+  console.log("foo changed:", newValue);
 });
 ```
 
-Note: this is *not* the same as the native `storage` event—it only triggers within the current context when `localit` methods are used.
+Note: this is _not_ the same as the native `storage` event—it only triggers within the current context when `localit` methods are used.
 
 ---
 
 ## 🧪 Example
 
 ```ts
-localit.set('cart', { count: 3 }, { expiration: '2h' });
+localit.set("cart", { count: 3 }, { expiration: "2h" });
 
-const cart = localit.get('cart'); // { count: 3 }
+const cart = localit.get("cart"); // { count: 3 }
 
-localit.on('cart', (val) => {
-  console.log('Cart updated:', val);
+localit.on("cart", (val) => {
+  console.log("Cart updated:", val);
 });
 
-localit.set('cart', { count: 4 }); // logs: Cart updated: { count: 4 }
+localit.set("cart", { count: 4 }); // logs: Cart updated: { count: 4 }
 ```
 
 ---
@@ -138,7 +142,12 @@ localit.set('cart', { count: 4 }); // logs: Cart updated: { count: 4 }
 ## 📚 Types
 
 ```ts
-type ExpirationType = `${number}s` | `${number}m` | `${number}h` | `${number}d` | Date;
+type ExpirationType =
+  | `${number}s`
+  | `${number}m`
+  | `${number}h`
+  | `${number}d`
+  | Date;
 
 type LocalitSetConfig = {
   type?: Storage;

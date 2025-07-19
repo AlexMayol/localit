@@ -43,20 +43,20 @@ const getExpirationTime = (expirationTime?: ExpirationType): number | null => {
   if (expirationTime instanceof Date) {
     if (isNaN(expirationTime.getTime())) {
       console.warn(
-        "🔥 Localit: provided Date is invalid. Your expiration date hasn't been saved."
+        "Localit: provided Date is invalid. Your expiration date wasn't saved.",
       );
       return null;
     }
     return expirationTime.getTime();
   }
 
-  if (typeof expirationTime !== 'string') {
+  if (typeof expirationTime !== "string") {
     console.warn(
-      "🔥 Localit: invalid expiration time type. Please provide a string (e.g. '20h') or a Date object."
+      "Localit: invalid expiration time type. Provide a string (e.g. '20h') or a Date.",
     );
     return null;
   }
-  
+
   const expirationDate = new Date();
 
   // Or check if input is a valid string with the desired format
@@ -80,7 +80,7 @@ const getExpirationTime = (expirationTime?: ExpirationType): number | null => {
     isNaN(time)
   ) {
     console.warn(
-      "🔥 Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date hasn't been saved."
+      "Localit: provide a valid expiration time format (e.g. '20h', '160s', '15d'). Your expiration date wasn't saved.",
     );
     return null;
   }
@@ -132,7 +132,7 @@ const set = (key: string, value: any, config?: LocalitSetConfig) => {
   const storeObject: LocalitItem = {
     value: serializedValue,
     meta: {
-      expiration: getExpirationTime(config?.expiration)
+      expiration: getExpirationTime(config?.expiration),
     },
   };
 
@@ -145,7 +145,7 @@ const get = <T>(key: string, config?: LocalitGetConfig): T | null => {
   const { fullKey, storage } = getConfig(key, config);
 
   const item: LocalitItem | null = JSON.parse(
-    storage.getItem(fullKey) ?? "null"
+    storage.getItem(fullKey) ?? "null",
   );
   if (!item) return null;
 
@@ -169,7 +169,7 @@ const remove = (key: string, config?: LocalitGetConfig): void => {
 };
 
 const clearFamily = (family: string, storage?: Storage) => {
-  let store = storage ?? localStorage;
+  const store = storage ?? localStorage;
 
   for (const key of Object.keys(store))
     if (key.includes(`${family}::`)) {
@@ -178,7 +178,7 @@ const clearFamily = (family: string, storage?: Storage) => {
 };
 
 const bust = (storage?: Storage) => {
-  let store = storage ?? localStorage;
+  const store = storage ?? localStorage;
 
   store.clear();
   Object.keys(listeners).forEach((event) => {

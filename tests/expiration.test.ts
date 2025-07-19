@@ -124,7 +124,7 @@ describe("Saving and retrieving objects", () => {
       expiration: new Date("invalid date"),
     });
     expect(consoleMock).toHaveBeenCalledWith(
-      "🔥 Localit: provided Date is invalid. Your expiration date hasn't been saved."
+      "Localit: provided Date is invalid. Your expiration date wasn't saved.",
     );
     const item = JSON.parse(localStorage.getItem("invalid-date") || "null");
     expect(item?.meta.expiration).toBeNull();

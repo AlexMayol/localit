@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach } from "vitest";
 import { localit } from "../dist/localit.es.js";
 import type { Localit } from "../dist/index.d.ts";
 
@@ -10,7 +10,7 @@ describe("Saving and retrieving arrays", () => {
 
   beforeEach(() => {
     store.bust();
-    store.set(KEY, VALUE, {family: "array_tests"});
+    store.set(KEY, VALUE, { family: "array_tests" });
   });
 
   test("Array is stored", () => {
@@ -22,14 +22,14 @@ describe("Saving and retrieving arrays", () => {
     expect(array).toBe(null);
   });
   test("Array is retieved properly", () => {
-    const array = store.get(KEY, {family: "array_tests"});
+    const array = store.get(KEY, { family: "array_tests" });
     expect(array).toEqual(VALUE);
   });
 
   test("array is not modified in memory", () => {
-    const array = store.get(KEY, {family: "array_tests"});
+    const array = store.get(KEY, { family: "array_tests" });
     (array as any).push(5);
     expect(array).not.toEqual(VALUE);
-    expect(store.get(KEY, {family: "array_tests"})).toEqual(VALUE);
+    expect(store.get(KEY, { family: "array_tests" })).toEqual(VALUE);
   });
 });
