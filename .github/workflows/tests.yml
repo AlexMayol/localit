@@ -13,11 +13,11 @@ jobs:
         with:
           node-version: 22
 
-      - run: npm ci
+      - run: pnpm i
         name: Install dependencies
 
-      - run: npm test
+      - run: pnpm test
         name: Run unit tests
 
-      - run: npm run build
+      - run: pnpm build
         name: Check build

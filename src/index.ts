@@ -95,11 +95,10 @@ const getExpirationTime = (expirationTime?: ExpirationType): number | null => {
 const hasExpired = (time: number) => new Date() > new Date(time);
 
 const on = (event: string, callback: (value: any) => void) => {
-  const key = event;
-  if (!listeners[key]) {
-    listeners[key] = [];
+  if (!listeners[event]) {
+    listeners[event] = [];
   }
-  listeners[key].push(callback);
+  listeners[event].push(callback);
 };
 
 const emit = (event: string, ...data: [any]) => {
@@ -114,7 +113,7 @@ const emit = (event: string, ...data: [any]) => {
 
 const set = (key: string, value: any, config?: LocalitSetConfig) => {
   if (!key)
-    return console.error("🔥 Localit: provide a key to store the value");
+    return console.error("Localit: provide a key to store the value");
 
   let serializedValue = value;
   if (value instanceof Map) {
@@ -168,22 +167,16 @@ const remove = (key: string, config?: LocalitGetConfig): void => {
   storage.removeItem(fullKey);
 };
 
-const clearFamily = (family: string, storage?: Storage) => {
-  const store = storage ?? localStorage;
-
-  for (const key of Object.keys(store))
+const clearFamily = (family: string, storage: Storage = localStorage) => {
+  for (const key of Object.keys(storage))
     if (key.includes(`${family}::`)) {
-      remove(key, { type: store });
+      remove(key, { type: storage });
     }
 };
 
-const bust = (storage?: Storage) => {
-  const store = storage ?? localStorage;
-
-  store.clear();
-  Object.keys(listeners).forEach((event) => {
-    emit(event, null);
-  });
+const bust = (storage: Storage = localStorage) => {
+  storage.clear();
+  Object.keys(listeners).forEach((event) => emit(event, null));
 };
 
 export const localit = {
