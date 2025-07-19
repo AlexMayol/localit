@@ -13,11 +13,11 @@ jobs:
         with:
           node-version: 22
 
-      - run: yarn install
+      - run: npm install
         name: Install dependencies
 
-      - run: yarn test
+      - run: npm test
         name: Run unit tests
 
-      - run: yarn build
+      - run: npm run build
         name: Check build

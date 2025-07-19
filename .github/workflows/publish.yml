@@ -15,13 +15,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22
-          cache: "yarn"
+          cache: "npm"
 
       - name: Install Dependencies
-        run: yarn install
+        run: npm install
 
       - name: Build
-        run: yarn build
+        run: npm run build
 
       - name: 🚀 Publish to npm
         uses: JS-DevTools/npm-publish@v1
