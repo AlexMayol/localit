@@ -41,7 +41,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.5.0",
-    "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^24.0.3",
     "eslint": "^9.15.0",
     "globals": "^15.6.0",
