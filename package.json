@@ -1,6 +1,6 @@
 {
   "name": "localit",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "license": "MIT",
   "description": "Manage your Storage with ease, adding expiration dates through a simple API",
   "repository": "alexmayol/localit",
