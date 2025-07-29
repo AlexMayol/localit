@@ -12,8 +12,12 @@
     <script type="module">
       import { localit } from "../dist/localit.es.js";
       localit.bust();
-      localit.set("foo", "bar");
-      console.log(localStorage);
+
+      for (let i = 0; i < 10000; i++) {
+        localit.set(`foo-${i}`, [Array(100).fill({ a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9, j: 10 })], {
+          expiration: "10h",
+        });
+      }
     </script>
   </body>
 </html>

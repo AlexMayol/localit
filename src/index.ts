@@ -135,8 +135,17 @@ const set = (key: string, value: any, config?: LocalitSetConfig) => {
   };
 
   const { fullKey, storage } = getConfig(key, config);
-  emit(fullKey, storeObject.value);
-  storage.setItem(fullKey, JSON.stringify(storeObject));
+  
+  try {
+    storage.setItem(fullKey, JSON.stringify(storeObject));
+    emit(fullKey, storeObject.value);
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "QuotaExceededError") {
+      console.warn(`Localit: Storage quota exceeded. Could not save key "${key}"`);
+      return;
+    }
+    throw error;
+  }
 };
 
 const get = <T>(key: string, config?: LocalitGetConfig): T | null => {
