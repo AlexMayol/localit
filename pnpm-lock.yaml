@@ -37,10 +37,10 @@ importers:
         version: 8.49.0(eslint@9.39.1)(typescript@5.9.2)
       vite:
         specifier: ^7.0.5
-        version: 7.2.6(@types/node@24.10.1)(terser@5.43.1)
+        version: 7.2.7(@types/node@24.10.1)(terser@5.43.1)
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.10.1)(rollup@4.53.3)(typescript@5.9.2)(vite@7.2.6(@types/node@24.10.1)(terser@5.43.1))
+        version: 4.5.4(@types/node@24.10.1)(rollup@4.53.3)(typescript@5.9.2)(vite@7.2.7(@types/node@24.10.1)(terser@5.43.1))
       vitest:
         specifier: ^4.0.6
         version: 4.0.15(@types/node@24.10.1)(jsdom@27.2.0)(terser@5.43.1)
@@ -1351,8 +1351,8 @@ packages:
       vite:
         optional: true
 
-  vite@7.2.6:
-    resolution: {integrity: sha512-tI2l/nFHC5rLh7+5+o7QjKjSR04ivXDF4jcgV0f/bTQ+OJiITy5S6gaynVsEM+7RqzufMnVbIon6Sr5x1SDYaQ==}
+  vite@7.2.7:
+    resolution: {integrity: sha512-ITcnkFeR3+fI8P1wMgItjGrR10170d8auB4EpMLPqmx6uxElH3a/hHGQabSHKdqd4FXWO1nFIp9rRn7JQ34ACQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -1969,13 +1969,13 @@ snapshots:
       chai: 6.2.1
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.15(vite@7.2.6(@types/node@24.10.1)(terser@5.43.1))':
+  '@vitest/mocker@4.0.15(vite@7.2.7(@types/node@24.10.1)(terser@5.43.1))':
     dependencies:
       '@vitest/spy': 4.0.15
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.2.6(@types/node@24.10.1)(terser@5.43.1)
+      vite: 7.2.7(@types/node@24.10.1)(terser@5.43.1)
 
   '@vitest/pretty-format@4.0.15':
     dependencies:
@@ -2754,7 +2754,7 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  vite-plugin-dts@4.5.4(@types/node@24.10.1)(rollup@4.53.3)(typescript@5.9.2)(vite@7.2.6(@types/node@24.10.1)(terser@5.43.1)):
+  vite-plugin-dts@4.5.4(@types/node@24.10.1)(rollup@4.53.3)(typescript@5.9.2)(vite@7.2.7(@types/node@24.10.1)(terser@5.43.1)):
     dependencies:
       '@microsoft/api-extractor': 7.52.8(@types/node@24.10.1)
       '@rollup/pluginutils': 5.2.0(rollup@4.53.3)
@@ -2767,13 +2767,13 @@ snapshots:
       magic-string: 0.30.17
       typescript: 5.9.2
     optionalDependencies:
-      vite: 7.2.6(@types/node@24.10.1)(terser@5.43.1)
+      vite: 7.2.7(@types/node@24.10.1)(terser@5.43.1)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite@7.2.6(@types/node@24.10.1)(terser@5.43.1):
+  vite@7.2.7(@types/node@24.10.1)(terser@5.43.1):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
@@ -2789,7 +2789,7 @@ snapshots:
   vitest@4.0.15(@types/node@24.10.1)(jsdom@27.2.0)(terser@5.43.1):
     dependencies:
       '@vitest/expect': 4.0.15
-      '@vitest/mocker': 4.0.15(vite@7.2.6(@types/node@24.10.1)(terser@5.43.1))
+      '@vitest/mocker': 4.0.15(vite@7.2.7(@types/node@24.10.1)(terser@5.43.1))
       '@vitest/pretty-format': 4.0.15
       '@vitest/runner': 4.0.15
       '@vitest/snapshot': 4.0.15
@@ -2806,7 +2806,7 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.2.6(@types/node@24.10.1)(terser@5.43.1)
+      vite: 7.2.7(@types/node@24.10.1)(terser@5.43.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.10.1
