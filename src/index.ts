@@ -31,6 +31,8 @@ const getConfig = (key: string, config?: LocalitGetConfig) => {
 };
 
 const listeners: { [key: string]: Array<(value: any) => void> } = {};
+const watchedKeys = new Set<string>();
+let storageListenerAttached = false;
 
 /**
  * @param key - the key to store with an expiration time
@@ -94,11 +96,47 @@ const getExpirationTime = (expirationTime?: ExpirationType): number | null => {
  */
 const hasExpired = (time: number) => new Date() > new Date(time);
 
+const handleStorageEvent = (event: StorageEvent) => {
+  const { key, newValue } = event;
+  if (!key || !listeners[key] || !watchedKeys.has(key)) return;
+
+  let parsedValue: any = null;
+  if (newValue !== null) {
+    try {
+      const item: LocalitItem | null = JSON.parse(newValue);
+      if (item?.meta?.expiration && hasExpired(item.meta.expiration)) {
+        parsedValue = null;
+      } else {
+        parsedValue = item.value;
+        if (parsedValue && parsedValue.__type === "Map") {
+          parsedValue = new Map(parsedValue.value);
+        } else if (parsedValue && parsedValue.__type === "Set") {
+          parsedValue = new Set(parsedValue.value);
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  for (const callback of listeners[key]) {
+    callback(parsedValue);
+  }
+};
+
+const attachStorageEvent = () => {
+  if (storageListenerAttached || typeof window === "undefined") return;
+  window.addEventListener("storage", handleStorageEvent);
+  storageListenerAttached = true;
+};
+
 const on = (event: string, callback: (value: any) => void) => {
   if (!listeners[event]) {
     listeners[event] = [];
   }
   listeners[event].push(callback);
+  watchedKeys.add(event);
+  attachStorageEvent();
 };
 
 const emit = (event: string, ...data: [any]) => {
