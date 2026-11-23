@@ -40,7 +40,7 @@
     "pretty": "pnpm prettier:fix && pnpm lint:fix"
   },
   "devDependencies": {
-    "@eslint/js": "^9.5.0",
+    "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.6",
     "eslint": "^10.4.0",
     "globals": "^17.3.0",
